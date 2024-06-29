@@ -37,7 +37,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _groundGameObject.Model = Content.Load<Model>("3d/ground");
+            _groundGameObject.Model = Content.Load<Model>("3d/terrain");
         }
 
         protected override void Update(GameTime gameTime)
@@ -54,7 +54,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DeepSkyBlue);
+            GraphicsDevice.Clear(Color.Azure);
 
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
 
