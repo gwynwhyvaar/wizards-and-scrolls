@@ -26,9 +26,20 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         public FuelCellGameHome()
         {
             _graphics = new GraphicsDeviceManager(this);
+            
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            _graphics.IsFullScreen = false;
+            _graphics.PreferMultiSampling = true;
+            _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+        }
+
+        private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            _graphics.PreferMultiSampling = true;
+            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 16;
         }
 
         protected override void Initialize()
@@ -39,8 +50,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             // init and place the scrolls
             _scrolls = new Scroll[1];
             _scrolls[0] = new Scroll();
-            _scrolls[0].LoadContent(Content, "scroll");
-            _scrolls[0].Position = new Vector3(0, 0, 15);
+            _scrolls[0].LoadContent(Content, "scroll_small");
+            _scrolls[0].Position = new Vector3(-15, 0, 60);
             
             // init and place the rock barriers;
             _rockBarriers =new RockBarrier[3];
@@ -51,15 +62,16 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _rockBarriers[0].LoadContent(Content, "boulder_mesh_01");
             _rockBarriers[0].Position = new Vector3(0, 0, 30);
 
-            _rockBarriers[1].LoadContent(Content, "boulder_mesh_01");
-            _rockBarriers[1].Position = new Vector3(15, 0, 30);
+            _rockBarriers[1].LoadContent(Content, "boulder_mesh_02");
+            _rockBarriers[1].Position = new Vector3(20, 0, 30);
 
-            _rockBarriers[2].LoadContent(Content, "boulder_mesh_01");
-            _rockBarriers[2].Position = new Vector3(-15, 0, 30);
+            _rockBarriers[2].LoadContent(Content, "boulder_mesh_03");
+            _rockBarriers[2].Position = new Vector3(-20, 0, 30);
 
             // init and place the player avatar ** THE MOST IMPORTANT!
             _wizard =new Wizard();
             _wizard.LoadContent(Content, "wizard_ov_war");
+            // _wizard.Position = new Vector3(20, 0, 15);
 
             _drawModel = new DrawModel();
 

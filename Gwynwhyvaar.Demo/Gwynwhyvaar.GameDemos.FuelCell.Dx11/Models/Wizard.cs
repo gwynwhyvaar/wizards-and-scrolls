@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
@@ -27,7 +28,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             try
             {
                 Matrix worldMatrix =Matrix.Identity;
-                Matrix rotationYMatrix =Matrix.CreateRotationX(ForwardDirection);
+                Matrix rotationYMatrix =Matrix.CreateRotationY(ForwardDirection);
                 Matrix translateMatrix = Matrix.CreateTranslation(Position);
 
                 worldMatrix = rotationYMatrix * translateMatrix;
@@ -38,9 +39,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                         effect.World =worldMatrix;
                         effect.View = view;
                         effect.Projection = projection;
-
-                        effect.EnableDefaultLighting();
-                        effect.PreferPerPixelLighting = true;
+                        effect.SetSolidEffect();
                     }
                 }
             }

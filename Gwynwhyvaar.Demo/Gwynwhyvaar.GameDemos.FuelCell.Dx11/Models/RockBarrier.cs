@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
@@ -36,8 +37,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                         effect.View = view;
                         effect.Projection = projection;
 
-                        effect.EnableDefaultLighting();
-                        effect.PreferPerPixelLighting = true;
+                        effect.SetSolidEffect();
                     }
                     mesh.Draw();
                 }
