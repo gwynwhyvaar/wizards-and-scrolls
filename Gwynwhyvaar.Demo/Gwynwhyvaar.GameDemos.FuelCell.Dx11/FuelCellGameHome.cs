@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using SharpDX.XInput;
+
 namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 {
     public class FuelCellGameHome : Game
@@ -23,10 +25,18 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        // input keyboard state ..
+        private KeyboardState _lastKeyboardState;
+        private KeyboardState _currentKeyboardState;
+
+        // input gamepad state ..
+        private GamePadState _lastGamepadState;
+        private GamePadState _currentGamepadState;
+
         public FuelCellGameHome()
         {
             _graphics = new GraphicsDeviceManager(this);
-            
+
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.IsFullScreen = false;
             _graphics.PreferMultiSampling = true;
@@ -34,6 +44,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            _lastKeyboardState = new KeyboardState();
+            _currentKeyboardState = new KeyboardState();
+
+            _lastGamepadState = new GamePadState();
+            _currentGamepadState = new GamePadState();
         }
 
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -52,9 +68,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _scrolls[0] = new Scroll();
             _scrolls[0].LoadContent(Content, "scroll_small");
             _scrolls[0].Position = new Vector3(-15, 0, 60);
-            
+
             // init and place the rock barriers;
-            _rockBarriers =new RockBarrier[3];
+            _rockBarriers = new RockBarrier[3];
             _rockBarriers[0] = new RockBarrier();
             _rockBarriers[1] = new RockBarrier();
             _rockBarriers[2] = new RockBarrier();
@@ -69,7 +85,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _rockBarriers[2].Position = new Vector3(-20, 0, 30);
 
             // init and place the player avatar ** THE MOST IMPORTANT!
-            _wizard =new Wizard();
+            _wizard = new Wizard();
             _wizard.LoadContent(Content, "wizard_ov_war");
             // _wizard.Position = new Vector3(20, 0, 15);
 
@@ -86,13 +102,21 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         protected override void Update(GameTime gameTime)
         {
+            float aspectRatio = _graphics.GraphicsDevice.Viewport.AspectRatio;
+
+            _lastKeyboardState = _currentKeyboardState;
+            _currentKeyboardState = Keyboard.GetState();
+
+            _lastGamepadState = _currentGamepadState;
+            _currentGamepadState = GamePad.GetState(PlayerIndex.One);
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
-            float rotation = 0.0f;
-            Vector3 position =Vector3.Zero;
-            _gameCameraObject.Update(rotation, position, _graphics.GraphicsDevice.Viewport.AspectRatio);
+           
+            _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
+            _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, aspectRatio);
             base.Update(gameTime);
         }
 
