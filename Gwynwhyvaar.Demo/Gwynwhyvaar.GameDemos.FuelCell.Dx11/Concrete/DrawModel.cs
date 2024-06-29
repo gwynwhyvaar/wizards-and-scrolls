@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
 
@@ -16,13 +17,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
             {
                 foreach (ModelMesh mesh in model.Meshes)
                 {
-                    foreach(BasicEffect effect in mesh.Effects)
+                    foreach (BasicEffect effect in mesh.Effects)
                     {
-                        effect.EnableDefaultLighting();
-                        effect.PreferPerPixelLighting = true;
-                        effect.World =Matrix.Identity;
-                        effect.View =gameCamera.ViewMatrix;
+                        effect.World = Matrix.Identity;
+                        effect.View = gameCamera.ViewMatrix;
                         effect.Projection = gameCamera.ProjectionMatrix;
+
+                        effect.SetSolidEffect();
                     }
                     mesh.Draw();
                 }

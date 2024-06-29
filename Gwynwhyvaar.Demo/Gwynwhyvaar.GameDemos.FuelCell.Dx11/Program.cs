@@ -1,2 +1,2 @@
-﻿using var game = new Gwynwhyvaar.GameDemos.FuelCell.Dx11.GameHome();
+﻿using var game = new Gwynwhyvaar.GameDemos.FuelCell.Dx11.FuelCellGameHome();
 game.Run();
