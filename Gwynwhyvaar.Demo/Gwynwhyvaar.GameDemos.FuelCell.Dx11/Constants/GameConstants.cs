@@ -13,5 +13,11 @@
         public const float TurnSpeed = 0.025f;
         // The MaxRange member is used to prevent the player -avatar from moving off the playing field
         public const int MaxRange = 98;
+
+        // scrolls and objects settings
+        public const int NumScrolls = 2;
+        public const int NumRockBarriers = 3;
+        public const int MinDistance = 0;
+        public const int MaxDistance = 1;
     }
 }
