@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
 {
-    public record class Scroll: GameObject, IGameObjectInterface
+    public record class Scroll : GameObject, IGameObjectInterface
     {
         public bool IsRetrieved { get; set; }
-        public Scroll(): base()
+        public Scroll() : base()
         {
             IsRetrieved = false;
         }
@@ -26,18 +26,17 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             try
             {
                 Matrix translateMatrix = Matrix.CreateTranslation(Position);
-                Matrix worldMatrix =translateMatrix;
+                Matrix worldMatrix = translateMatrix;
                 if (!IsRetrieved)
                 {
                     foreach (ModelMesh mesh in Model.Meshes)
                     {
                         foreach (BasicEffect effect in mesh.Effects)
                         {
-                            effect.World =worldMatrix;
+                            effect.World = worldMatrix;
                             effect.View = view;
                             effect.Projection = projection;
                             effect.SetSolidEffect();
-                            effect.EmissiveColor = Color.Violet.ToVector3();
                         }
                         mesh.Draw();
                     }
