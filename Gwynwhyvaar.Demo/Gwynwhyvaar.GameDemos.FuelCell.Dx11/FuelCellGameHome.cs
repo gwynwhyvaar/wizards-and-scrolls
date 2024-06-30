@@ -43,6 +43,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.IsFullScreen = false;
             _graphics.PreferMultiSampling = true;
+
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
 
             Content.RootDirectory = "Content";
@@ -134,8 +135,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DeepSkyBlue);
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
+            _graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             // draw game objects
             // 1. the terrain
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
