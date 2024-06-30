@@ -37,6 +37,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                             effect.View = view;
                             effect.Projection = projection;
                             effect.SetSolidEffect();
+                            effect.EmissiveColor = Color.Violet.ToVector3();
                         }
                         mesh.Draw();
                     }

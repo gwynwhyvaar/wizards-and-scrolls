@@ -17,6 +17,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         public int MaxRange { get; set; } = GameConstants.MaxRange;
         public Wizard() : base()
         {
+            Position = new Vector3(0, GameConstants.HeightOffset, 0);
         }
 
         public void LoadContent(ContentManager content, string modelName)
@@ -31,8 +32,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                 Matrix worldMatrix = Matrix.Identity;
                 Matrix rotationYMatrix = Matrix.CreateRotationY(ForwardDirection);
                 Matrix translateMatrix = Matrix.CreateTranslation(Position);
-
+              
                 worldMatrix = rotationYMatrix * translateMatrix;
+
                 foreach (ModelMesh mesh in Model.Meshes)
                 {
                     foreach (BasicEffect effect in mesh.Effects)
@@ -42,6 +44,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                         effect.Projection = projection;
                         effect.SetSolidEffect();
                     }
+                    mesh.Draw();
                 }
             }
             catch (Exception ex)
