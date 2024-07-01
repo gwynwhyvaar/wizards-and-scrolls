@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
@@ -21,6 +22,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             Model = contentManager.Load<Model>($"3d/{modelName}");
             Position = Vector3.Down;
             RockBarrierType = modelName;
+            BoundingSphere = CalculateBoundingSphere();
+            // .......
+            BoundingSphere scaledSphere;
+            scaledSphere = BoundingSphere;
+            scaledSphere.Radius *= GameConstants.ScrollBoundingSphereFactor;
+            BoundingSphere = new BoundingSphere(scaledSphere.Center, scaledSphere.Radius);
         }
 
         public void Draw(Matrix view, Matrix projection)

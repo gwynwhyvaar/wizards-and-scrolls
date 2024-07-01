@@ -19,7 +19,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private RockBarrier[] _rockBarriers;
 
         private DrawModel _drawModel;
-        private GameObject _groundGameObject;
+        private GameObject _groundGameObject, _boundingSphere;
         private CameraObject _gameCameraObject;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -66,6 +66,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         {
             _gameCameraObject = new CameraObject();
             _groundGameObject = new GameObject();
+            _boundingSphere =new GameObject();
             // init the scrolls
             _scrolls = new Scroll[GameConstants.NumScrolls];
             for (int index = 0; index < _scrolls.Length; index++)
@@ -110,6 +111,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            // load the bounding sphere
+            _boundingSphere.Model = Content.Load<Model>("3d/sphere1uR");
+            // load the terrain
             _groundGameObject.Model = Content.Load<Model>("3d/terrain");
         }
 
@@ -130,6 +134,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
             _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, aspectRatio);
+
+            // todo: checking the intersection between the scrolls and the wizard game object
+            foreach(Scroll scroll in _scrolls)
+            {
+                scroll.Update(_wizard.BoundingSphere);
+            }
             base.Update(gameTime);
         }
 
@@ -137,23 +147,44 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         {
             _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
             _graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            // draw game objects
             // 1. the terrain
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
             // 2. the scroll
             foreach (Scroll scroll in _scrolls)
             {
-                scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                if (!scroll.IsRetrieved)
+                {
+                    scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                    ChangeRasterizerState(FillMode.WireFrame);
+                    // draw the bounding sphere
+                    scroll.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
+                    // reset the graphics device drawing mode to solid/ textured
+                    ChangeRasterizerState(FillMode.Solid);
+                }
             }
             // 3. the rock barriers
             foreach (RockBarrier rockBarrier in _rockBarriers)
             {
                 rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                ChangeRasterizerState(FillMode.WireFrame);
+                // draw the bounding sphere
+                rockBarrier.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
+                // reset the graphics device drawing mode to solid/ textured
+                ChangeRasterizerState(FillMode.Solid);
             }
             // 4. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             base.Draw(gameTime);
+        }
+        private RasterizerState ChangeRasterizerState(FillMode fillMode, CullMode cullMode = CullMode.None)
+        {
+            RasterizerState state = new RasterizerState()
+            {
+                FillMode = fillMode,
+                CullMode = cullMode,
+            };
+            _graphics.GraphicsDevice.RasterizerState = state;
+            return state;
         }
     }
 }
