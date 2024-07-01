@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
@@ -20,6 +21,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         {
             Model = contentManager.Load<Model>($"3d/{modelName}");
             Position = Vector3.Down;
+            BoundingSphere = CalculateBoundingSphere();
+
+            // .......
+            BoundingSphere scaledSphere;
+            scaledSphere = BoundingSphere;
+            scaledSphere.Radius *= GameConstants.ScrollBoundingSphereFactor;
+            BoundingSphere = new BoundingSphere(scaledSphere.Center, scaledSphere.Radius);
         }
         public void Draw(Matrix view, Matrix projection)
         {
@@ -27,25 +35,29 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             {
                 Matrix translateMatrix = Matrix.CreateTranslation(Position);
                 Matrix worldMatrix = translateMatrix;
-                if (!IsRetrieved)
+                foreach (ModelMesh mesh in Model.Meshes)
                 {
-                    foreach (ModelMesh mesh in Model.Meshes)
+                    foreach (BasicEffect effect in mesh.Effects)
                     {
-                        foreach (BasicEffect effect in mesh.Effects)
-                        {
-                            effect.World = worldMatrix;
-                            effect.View = view;
-                            effect.Projection = projection;
-                            effect.SetSolidEffect();
-                        }
-                        mesh.Draw();
+                        effect.World = worldMatrix;
+                        effect.View = view;
+                        effect.Projection = projection;
+                        effect.SetSolidEffect();
                     }
+                    mesh.Draw();
                 }
             }
             catch (Exception ex)
             {
                 // log it
                 throw new Exception(ex.Message);
+            }
+        }
+        public void Update(BoundingSphere wizardBoundingSphere)
+        {
+            if(wizardBoundingSphere.Intersects(this.BoundingSphere) &&!this.IsRetrieved)
+            {
+                this.IsRetrieved = true;
             }
         }
     }
