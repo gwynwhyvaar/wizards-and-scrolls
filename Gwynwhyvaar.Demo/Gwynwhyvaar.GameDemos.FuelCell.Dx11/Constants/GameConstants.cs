@@ -5,7 +5,7 @@
         // camera constants
         // todo: some of these can be in config setting
         public const float NearClip = 0.01f; // 1.0f;
-        public const float FarClip = 1000.0f;
+        public const float FarClip = 2000.0f;
         public const float ViewAngle = 45.0f;
 
         // player -avatar constants
