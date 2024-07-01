@@ -1,13 +1,12 @@
 ﻿using System;
 
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete;
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-using SharpDX.XInput;
 
 namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 {
@@ -33,13 +32,18 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private GamePadState _lastGamepadState;
         private GamePadState _currentGamepadState;
 
+        private GameObjectPosition _gameObjectPostion;
+
         public FuelCellGameHome()
         {
+            _random = new Random();
+            _gameObjectPostion = new GameObjectPosition();
             _graphics = new GraphicsDeviceManager(this);
 
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.IsFullScreen = false;
             _graphics.PreferMultiSampling = true;
+
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
 
             Content.RootDirectory = "Content";
@@ -62,32 +66,41 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         {
             _gameCameraObject = new CameraObject();
             _groundGameObject = new GameObject();
+            // init the scrolls
+            _scrolls = new Scroll[GameConstants.NumScrolls];
+            for (int index = 0; index < _scrolls.Length; index++)
+            {
+                _scrolls[index] = new Scroll();
+                _scrolls[index].LoadContent(Content, "scroll_small");
+            }
 
-            // init and place the scrolls
-            _scrolls = new Scroll[1];
-            _scrolls[0] = new Scroll();
-            _scrolls[0].LoadContent(Content, "scroll_small");
-            _scrolls[0].Position = new Vector3(-15, 0, 60);
-
-            // init and place the rock barriers;
-            _rockBarriers = new RockBarrier[3];
-            _rockBarriers[0] = new RockBarrier();
-            _rockBarriers[1] = new RockBarrier();
-            _rockBarriers[2] = new RockBarrier();
-
-            _rockBarriers[0].LoadContent(Content, "boulder_mesh_01");
-            _rockBarriers[0].Position = new Vector3(0, 0, 30);
-
-            _rockBarriers[1].LoadContent(Content, "boulder_mesh_02");
-            _rockBarriers[1].Position = new Vector3(20, 0, 30);
-
-            _rockBarriers[2].LoadContent(Content, "boulder_mesh_03");
-            _rockBarriers[2].Position = new Vector3(-20, 0, 30);
-
+            // init the rock barriers
+            _rockBarriers = new RockBarrier[GameConstants.NumRockBarriers];
+            int randomRockBarrier = _random.Next(3);
+            string rockBarrierName = null;
+            for (int x = 0; x < _rockBarriers.Length; x++)
+            {
+                switch (randomRockBarrier)
+                {
+                    case 0:
+                        rockBarrierName = "boulder_mesh_01";
+                        break;
+                    case 1:
+                        rockBarrierName = "boulder_mesh_02";
+                        break;
+                    case 2:
+                        rockBarrierName = "boulder_mesh_03";
+                        break;
+                }
+                _rockBarriers[x] = new RockBarrier();
+                _rockBarriers[x].LoadContent(Content, rockBarrierName);
+                // reset the random value
+                randomRockBarrier = _random.Next(3);
+            }
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random);
             // init and place the player avatar ** THE MOST IMPORTANT!
             _wizard = new Wizard();
-            _wizard.LoadContent(Content, "wizard_ov_war");
-            // _wizard.Position = new Vector3(20, 0, 15);
+            _wizard.LoadContent(Content, "wizard");
 
             _drawModel = new DrawModel();
 
@@ -114,7 +127,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             {
                 Exit();
             }
-           
+
             _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
             _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, aspectRatio);
             base.Update(gameTime);
@@ -122,16 +135,21 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Azure);
+            _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
+            _graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             // draw game objects
             // 1. the terrain
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
             // 2. the scroll
-            _scrolls[0].Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
-            // 3. the rock barriers
-            foreach (RockBarrier barrier in _rockBarriers)
+            foreach (Scroll scroll in _scrolls)
             {
-                barrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+            }
+            // 3. the rock barriers
+            foreach (RockBarrier rockBarrier in _rockBarriers)
+            {
+                rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
             // 4. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
