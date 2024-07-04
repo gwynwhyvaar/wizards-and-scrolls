@@ -334,5 +334,5 @@
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:fonts/File.spritefont
+/build:fonts/File.spritefont;fonts/StatsFont.spritefont
 
