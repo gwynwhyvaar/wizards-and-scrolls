@@ -140,5 +140,10 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             }
             return false;
         }
+        public void Reset()
+        {
+            Position = Vector3.Zero;
+            ForwardDirection = 0f;
+        }
     }
 }
