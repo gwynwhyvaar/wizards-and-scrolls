@@ -1,4 +1,6 @@
-﻿namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
+﻿using System;
+
+namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
 {
     public class GameConstants
     {
@@ -27,5 +29,17 @@
         public const float WizardBoundingSphereFactor = .7f;
         public const float ScrollBoundingSphereFactor = .5f;
         public const float RockBarrierBoundingSphereFactor = .7f;
+
+        // game timer 
+        public static readonly TimeSpan RoundTime = TimeSpan.FromSeconds(30.25);
+
+        // display text
+        public const string TimeRemainingText = "Time Remaining: ";
+        public const string ScrollsFoundText = "Scrolls Retrieved: ";
+        public const string GameWonText = "Game Won !";
+        public const string GameLostText = "Game Lost !";
+        public const string PlayAgainText = "Press Enter/Start to play again or Esc/Back to quit";
+        public const string Instructions1Text = "Retrieve all Scrolls before time runs out.";
+        public const string Instructions2Text = "Control Wizard using keyboard (A, D, W, S) or the left thumbstick.";
     }
 }

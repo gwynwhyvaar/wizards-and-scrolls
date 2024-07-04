@@ -12,6 +12,10 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 {
     public class FuelCellGameHome : Game
     {
+        private int _retrievedScrolls = 0;
+
+        private TimeSpan _startTime, _roundTimer, _roundTime;
+
         private Random _random;
         private Wizard _wizard;
 
@@ -23,6 +27,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private CameraObject _gameCameraObject;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private SpriteFont _statsFont;
 
         // input keyboard state ..
         private KeyboardState _lastKeyboardState;
@@ -36,6 +42,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         public FuelCellGameHome()
         {
+            _roundTime =GameConstants.RoundTime;
             _random = new Random();
             _gameObjectPostion = new GameObjectPosition();
             _graphics = new GraphicsDeviceManager(this);
@@ -54,6 +61,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             _lastGamepadState = new GamePadState();
             _currentGamepadState = new GamePadState();
+
+            // set a default resolution of 853 x480
+            _graphics.PreferredBackBufferWidth = 853;
+            _graphics.PreferredBackBufferHeight = 480;
+
+            // _graphics.PreferredBackBufferFormat = SurfaceFormat.
         }
 
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -115,6 +128,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _boundingSphere.Model = Content.Load<Model>("3d/sphere1uR");
             // load the terrain
             _groundGameObject.Model = Content.Load<Model>("3d/terrain");
+            // load font
+            _statsFont = Content.Load<SpriteFont>("fonts/File");
         }
 
         protected override void Update(GameTime gameTime)
@@ -132,7 +147,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 Exit();
             }
 
+            if((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_lastKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start ==ButtonState.Pressed)
+            {
+                _roundTimer = _roundTime;
+            }
+
             _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
+
             _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, aspectRatio);
 
             // todo: checking the intersection between the scrolls and the wizard game object
@@ -140,6 +161,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             {
                 scroll.Update(_wizard.BoundingSphere);
             }
+            _roundTimer -= gameTime.ElapsedGameTime;
             base.Update(gameTime);
         }
 
@@ -155,27 +177,31 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 if (!scroll.IsRetrieved)
                 {
                     scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
-                    ChangeRasterizerState(FillMode.WireFrame);
+                    // ChangeRasterizerState(FillMode.WireFrame);
                     // draw the bounding sphere
-                    scroll.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
+                    //  scroll.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
                     // reset the graphics device drawing mode to solid/ textured
-                    ChangeRasterizerState(FillMode.Solid);
+                    // ChangeRasterizerState(FillMode.Solid);
                 }
             }
             // 3. the rock barriers
             foreach (RockBarrier rockBarrier in _rockBarriers)
             {
                 rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
-                ChangeRasterizerState(FillMode.WireFrame);
+                // ChangeRasterizerState(FillMode.WireFrame);
                 // draw the bounding sphere
-                rockBarrier.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
+                // rockBarrier.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
                 // reset the graphics device drawing mode to solid/ textured
-                ChangeRasterizerState(FillMode.Solid);
+                // ChangeRasterizerState(FillMode.Solid);
             }
             // 4. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+
+            DrawStats();
+
             base.Draw(gameTime);
         }
+
         private RasterizerState ChangeRasterizerState(FillMode fillMode, CullMode cullMode = CullMode.None)
         {
             RasterizerState state = new RasterizerState()
@@ -185,6 +211,44 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             };
             _graphics.GraphicsDevice.RasterizerState = state;
             return state;
+        }
+
+        private void DrawStats()
+        {
+            float xOffSetText, yOffSetText;
+
+            string text1 =GameConstants.TimeRemainingText;
+            string text2 =GameConstants.ScrollsFoundText +_retrievedScrolls.ToString()+ " of "+GameConstants.NumRockBarriers.ToString();
+
+            Rectangle rectSafeArea;
+
+            text1 += (_roundTimer.Seconds).ToString();
+
+            rectSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
+
+            xOffSetText =rectSafeArea.X;
+            yOffSetText =rectSafeArea.Y;
+
+            Vector2 textSize =_statsFont.MeasureString(text1);
+            Vector2 positionText = new Vector2(xOffSetText + 10, yOffSetText);
+
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(_statsFont, text1, positionText, Color.White);
+            positionText.Y += textSize.Y;
+
+            _spriteBatch.DrawString(_statsFont, text2, positionText, Color.White);
+            _spriteBatch.End();
+
+            ResetRenderStates();
+        }
+
+        private void ResetRenderStates()
+        {    
+            //re-enable depth buffer after sprite batch disablement
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
     }
 }
