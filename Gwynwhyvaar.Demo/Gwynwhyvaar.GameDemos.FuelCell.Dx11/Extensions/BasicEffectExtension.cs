@@ -14,7 +14,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions
             effect.SpecularColor = Vector3.Zero;
             effect.EmissiveColor = Vector3.Zero;
             // this part allows drawing of the meshes in solid
-            effect.DirectionalLight0.Enabled = false;
+            effect.DirectionalLight0.Enabled = true;
             effect.DirectionalLight1.Enabled = false;
             effect.DirectionalLight2.Enabled = false;
         }
