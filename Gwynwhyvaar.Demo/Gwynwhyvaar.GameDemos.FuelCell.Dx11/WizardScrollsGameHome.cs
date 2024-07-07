@@ -113,7 +113,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             // load the terrain
             _groundGameObject.Model = Content.Load<Model>("3d/terrain");
             // load font
-            _statsFont = Content.Load<SpriteFont>("fonts/File");
+            _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
         }
 
         protected override void Update(GameTime gameTime)
