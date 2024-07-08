@@ -98,7 +98,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             InitializeGameField();
             // init and place the player avatar ** THE MOST IMPORTANT!
             _wizard = new Wizard();
-            _wizard.LoadContent(Content, "wizard");
+            _wizard.LoadContent(Content, "wizard_ov_war");
 
             _drawModel = new DrawModel();
 
