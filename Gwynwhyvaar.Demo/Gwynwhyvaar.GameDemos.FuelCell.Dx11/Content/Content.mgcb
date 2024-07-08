@@ -324,7 +324,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=0.05
+/processorParam:Scale=0.0825
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/wizard_ov_war.fbx
