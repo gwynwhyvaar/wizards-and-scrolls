@@ -6,6 +6,7 @@ using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,6 +17,20 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
     {
         public float ForwardDirection { get; set; } = 0.0f;
         public int MaxRange { get; set; } = GameConstants.MaxRange;
+
+        private SoundEffect _wizardRumble;
+        private SoundEffect WizardRumble
+        {
+            get
+            {
+                return _wizardRumble;
+            }
+            set
+            {
+                _wizardRumble = value;
+            }
+        }
+
         public Wizard() : base()
         {
             Position = new Vector3(0, GameConstants.HeightOffset, 0);
@@ -24,6 +39,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         public void LoadContent(ContentManager content, string modelName)
         {
             Model = content.Load<Model>($"3d/{modelName}");
+            WizardRumble = content.Load<SoundEffect>("audio/game-sweep-swoosh");
+
             BoundingSphere = CalculateBoundingSphere();
             // .......
             BoundingSphere scaledSphere;
@@ -31,7 +48,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             scaledSphere.Radius *= GameConstants.ScrollBoundingSphereFactor;
             BoundingSphere = new BoundingSphere(scaledSphere.Center, scaledSphere.Radius);
         }
-
         public void Draw(Matrix view, Matrix projection)
         {
             try
@@ -96,6 +112,11 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             }
 
             Vector3 speed = Vector3.Transform(movement, orientationMatrix);
+            if (speed != Vector3.Zero)
+            {
+                WizardRumble.Play();
+            }
+
             speed *= GameConstants.Velocity;
             futurePosition = Position + speed;
 
@@ -111,7 +132,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                 this.BoundingSphere = new BoundingSphere(updatedSphere.Center, updatedSphere.Radius);
             }
         }
-
         private bool ValidateMovement(Vector3 futurePosition, RockBarrier[] rockBarriers)
         {
             BoundingSphere futureBoundingSphere = this.BoundingSphere;
