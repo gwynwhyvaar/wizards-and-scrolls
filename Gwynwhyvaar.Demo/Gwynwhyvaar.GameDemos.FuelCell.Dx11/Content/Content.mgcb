@@ -329,6 +329,24 @@
 /processorParam:TextureFormat=Compressed
 /build:3d/wizard_ov_war.fbx
 
+#begin audio/bonus-earned.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/bonus-earned.mp3
+
+#begin audio/game-level-background-music.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:audio/game-level-background-music.mp3
+
+#begin audio/game-sweep-swoosh.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/game-sweep-swoosh.mp3
+
 #begin fonts/File.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

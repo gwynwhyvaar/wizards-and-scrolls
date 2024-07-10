@@ -8,6 +8,7 @@ using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 {
@@ -18,6 +19,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private TimeSpan _startTime, _roundTimer, _roundTime;
 
         private float _aspectRatio;
+
+        private Song _backgroundMusic;
 
         private Random _random;
 
@@ -71,16 +74,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             // set a default resolution of 853 x480
             _graphics.PreferredBackBufferWidth = 853;
             _graphics.PreferredBackBufferHeight = 480;
-
-            // _graphics.PreferredBackBufferFormat = SurfaceFormat.
         }
-
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             _graphics.PreferMultiSampling = true;
             e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 16;
         }
-
         protected override void Initialize()
         {
             _gameCameraObject = new CameraObject();
@@ -104,7 +103,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             base.Initialize();
         }
-
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -114,8 +112,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _groundGameObject.Model = Content.Load<Model>("3d/terrain");
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
+            // load the background music
+            _backgroundMusic = Content.Load<Song>("audio/game-level-background-music");
         }
-
         protected override void Update(GameTime gameTime)
         {
             _lastKeyboardState = _currentKeyboardState;
@@ -166,6 +165,14 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             if ((_currentGameState == GameStateEnum.Won) || (_currentGameState == GameStateEnum.Lost))
             {
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    try
+                    {
+                        MediaPlayer.Stop();
+                    }
+                    catch { }
+                }
                 // reset the world
                 if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
                 {
@@ -175,7 +182,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             }
             base.Update(gameTime);
         }
-
         protected override void Draw(GameTime gameTime)
         {
             _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
@@ -202,7 +208,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             }
             base.Draw(gameTime);
         }
-
         private RasterizerState ChangeRasterizerState(FillMode fillMode, CullMode cullMode = CullMode.None)
         {
             RasterizerState state = new RasterizerState()
@@ -213,7 +218,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _graphics.GraphicsDevice.RasterizerState = state;
             return state;
         }
-
         private void DrawStats()
         {
             float xOffSetText, yOffSetText;
@@ -242,7 +246,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             ResetRenderStates();
         }
-
         private void ResetRenderStates()
         {
             //re-enable depth buffer after sprite batch disablement
@@ -251,7 +254,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
-
         private void DrawSplashScreen()
         {
             float xOffsetText, yOffsetText;
@@ -328,6 +330,15 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _startTime = gameTime.TotalGameTime;
             _roundTimer = _roundTime;
             _currentGameState = GameStateEnum.Running;
+
+            try
+            {
+                MediaPlayer.Stop();
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume = 0.5f;
+                MediaPlayer.Play(_backgroundMusic);
+            }
+            catch { }
         }
         private void InitializeGameField()
         {

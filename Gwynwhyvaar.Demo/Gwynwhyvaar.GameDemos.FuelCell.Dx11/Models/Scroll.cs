@@ -5,6 +5,7 @@ using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,6 +14,19 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
     public record class Scroll : GameObject, IGameObjectInterface
     {
         public bool IsRetrieved { get; set; }
+
+        private SoundEffect _scrollCollect;
+        private SoundEffect ScrollCollect
+        {
+            get
+            {
+                return _scrollCollect;
+            }
+            set
+            {
+                _scrollCollect = value;
+            }
+        }
         public Scroll() : base()
         {
             IsRetrieved = false;
@@ -20,6 +34,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         public void LoadContent(ContentManager contentManager, string modelName)
         {
             Model = contentManager.Load<Model>($"3d/{modelName}");
+            ScrollCollect = contentManager.Load<SoundEffect>("audio/bonus-earned");
+
             Position = Vector3.Down;
             BoundingSphere = CalculateBoundingSphere();
 
@@ -58,6 +74,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             if(wizardBoundingSphere.Intersects(this.BoundingSphere) &&!this.IsRetrieved)
             {
                 this.IsRetrieved = true;
+
+                ScrollCollect.Play();
             }
         }
     }
