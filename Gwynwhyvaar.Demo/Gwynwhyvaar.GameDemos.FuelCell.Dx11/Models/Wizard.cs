@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
