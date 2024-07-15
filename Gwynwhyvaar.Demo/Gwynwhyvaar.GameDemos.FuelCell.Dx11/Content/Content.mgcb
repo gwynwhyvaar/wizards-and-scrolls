@@ -354,6 +354,12 @@
 /processorParam:Quality=Best
 /build:audio/bonus-earned.mp3
 
+#begin audio/dash2.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/dash2.mp3
+
 #begin audio/game-level-background-music.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -365,6 +371,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:audio/game-sweep-swoosh.mp3
+
+#begin audio/the-time-is-upon-us-in_game.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:audio/the-time-is-upon-us-in_game.mp3
 
 #begin fonts/File.spritefont
 /importer:FontDescriptionImporter

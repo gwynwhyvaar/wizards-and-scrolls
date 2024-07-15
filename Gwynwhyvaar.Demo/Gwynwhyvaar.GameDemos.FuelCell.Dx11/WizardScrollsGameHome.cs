@@ -114,7 +114,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
             // load the background music
-            _backgroundMusic = Content.Load<Song>("audio/game-level-background-music");
+            _backgroundMusic = Content.Load<Song>("audio/the-time-is-upon-us-in_game");
         }
         protected override void Update(GameTime gameTime)
         {
@@ -298,22 +298,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 if (!scroll.IsRetrieved)
                 {
                     scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
-                    // ChangeRasterizerState(FillMode.WireFrame);
-                    // draw the bounding sphere
-                    //  scroll.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
-                    // reset the graphics device drawing mode to solid/ textured
-                    // ChangeRasterizerState(FillMode.Solid);
                 }
             }
             // 3. the rock barriers
             foreach (RockBarrier rockBarrier in _rockBarriers)
             {
                 rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
-                // ChangeRasterizerState(FillMode.WireFrame);
-                // draw the bounding sphere
-                // rockBarrier.DrawBoundingSphere(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix, _boundingSphere);
-                // reset the graphics device drawing mode to solid/ textured
-                // ChangeRasterizerState(FillMode.Solid);
             }
             // 4. draw the clouds ...
             foreach (CloudsGameObject cloud in _clouds)

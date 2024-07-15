@@ -17,18 +17,18 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         public float ForwardDirection { get; set; } = 0.0f;
         public int MaxRange { get; set; } = GameConstants.MaxRange;
 
-        private SoundEffect _wizardRumble;
-        private SoundEffect WizardRumble
-        {
-            get
-            {
-                return _wizardRumble;
-            }
-            set
-            {
-                _wizardRumble = value;
-            }
-        }
+        //private SoundEffect _wizardRumble;
+        //private SoundEffect WizardRumble
+        //{
+        //    get
+        //    {
+        //        return _wizardRumble;
+        //    }
+        //    set
+        //    {
+        //        _wizardRumble = value;
+        //    }
+        //}
 
         public Wizard() : base()
         {
@@ -38,7 +38,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         public void LoadContent(ContentManager content, string modelName)
         {
             Model = content.Load<Model>($"3d/{modelName}");
-            WizardRumble = content.Load<SoundEffect>("audio/game-sweep-swoosh");
+            // WizardRumble = content.Load<SoundEffect>("audio/dash2");
 
             BoundingSphere = CalculateBoundingSphere();
             // .......
@@ -111,10 +111,10 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             }
 
             Vector3 speed = Vector3.Transform(movement, orientationMatrix);
-            if (speed != Vector3.Zero)
-            {
-                WizardRumble.Play();
-            }
+            //if (speed != Vector3.Zero)
+            //{
+            //    WizardRumble.Play();
+            //}
 
             speed *= GameConstants.Velocity;
             futurePosition = Position + speed;
