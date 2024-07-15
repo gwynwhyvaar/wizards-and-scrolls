@@ -30,6 +30,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         private Scroll[] _scrolls;
         private RockBarrier[] _rockBarriers;
+        private CloudsGameObject[] _clouds;
 
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
@@ -223,7 +224,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             float xOffSetText, yOffSetText;
 
             string text1 = GameConstants.TimeRemainingText;
-            string text2 = GameConstants.ScrollsFoundText + _retrievedScrolls.ToString() + " of " + GameConstants.NumRockBarriers.ToString();
+            string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumRockBarriers.ToString()}";
 
             Rectangle rectSafeArea;
 
@@ -314,7 +315,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 // reset the graphics device drawing mode to solid/ textured
                 // ChangeRasterizerState(FillMode.Solid);
             }
-            // 4. the player avatar -zee the wizard ov war!
+            // 4. draw the clouds ...
+            foreach (CloudsGameObject cloud in _clouds)
+            {
+                cloud.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+            }
+
+            // 5. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
 
             DrawStats();
@@ -365,8 +372,15 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 // reset the random value
                 randomRockBarrier = _random.Next(3);
             }
+            // init the clouds
+            _clouds = new CloudsGameObject[GameConstants.NumCloudsBarriers];
+            for(int x = 0; x < GameConstants.NumCloudsBarriers; x++)
+            {
+                _clouds[x] = new CloudsGameObject();
+                _clouds[x].LoadContent(Content, "cloud");
+            }
             // PlaceScrollsAndRocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random);
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds);
         }
         private void DrawWinOrLossScreen(string gameResult)
         {

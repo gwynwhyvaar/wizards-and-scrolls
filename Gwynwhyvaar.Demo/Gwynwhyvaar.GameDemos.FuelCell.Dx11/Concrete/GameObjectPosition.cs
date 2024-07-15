@@ -10,7 +10,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
 {
     public class GameObjectPosition : IGameObjectPositionInterface
     {
-        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random)
+        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds)
         {
             int min = GameConstants.MinDistance;
             int max = GameConstants.MaxDistance;
@@ -37,6 +37,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
                 tempCenter.Z = barrier.Position.Z;
                 barrier.BoundingSphere = new BoundingSphere(tempCenter, barrier.BoundingSphere.Radius);
             }
+
+            // place clouds
+            foreach (CloudsGameObject cloud in clouds)
+            {
+                cloud.Position = GenerateRandomPosition(min, max, random);
+                cloud.Position.Y = 20;
+            }
         }
         private Vector3 GenerateRandomPosition(int min, int max, Scroll[] scrolls, RockBarrier[] rockBarriers, Random random)
         {
@@ -55,6 +62,21 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
                 }
             }
             while (IsOccupied(xValue, zValue, scrolls, rockBarriers));
+            return new Vector3(xValue, 0, zValue);
+        }
+        private Vector3 GenerateRandomPosition(int min, int max, Random random)
+        {
+            int xValue, zValue;
+            xValue = random.Next(min, max);
+            zValue = random.Next(min, max);
+            if (random.Next(100) % 2 == 0)
+            {
+                xValue *= -1;
+            }
+            if (random.Next(100) % 2 == 0)
+            {
+                zValue *= -1;
+            }
             return new Vector3(xValue, 0, zValue);
         }
         private bool IsOccupied(int xValue, int zValue, Scroll[] scrolls, RockBarrier[] rockBarriers)

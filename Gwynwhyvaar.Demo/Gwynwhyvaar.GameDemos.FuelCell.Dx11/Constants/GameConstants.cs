@@ -21,6 +21,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
         // scrolls and objects settings
         public const int NumScrolls = 12;
         public const int NumRockBarriers = 40;
+        public const int NumCloudsBarriers = 20;
         public const int MinDistance = 10;
         public const int MaxDistance = 90;
         public const int MaxRangeTerrain = 98;
