@@ -209,16 +209,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             }
             base.Draw(gameTime);
         }
-        private RasterizerState ChangeRasterizerState(FillMode fillMode, CullMode cullMode = CullMode.None)
-        {
-            RasterizerState state = new RasterizerState()
-            {
-                FillMode = fillMode,
-                CullMode = cullMode,
-            };
-            _graphics.GraphicsDevice.RasterizerState = state;
-            return state;
-        }
         private void DrawStats()
         {
             float xOffSetText, yOffSetText;

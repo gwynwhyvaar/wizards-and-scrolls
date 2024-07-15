@@ -81,11 +81,11 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             Vector3 futurePosition = Position;
             float turnAmount = 0;
 
-            if (keyboardState.IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
             {
                 turnAmount = 1;
             }
-            else if (keyboardState.IsKeyDown(Keys.D))
+            else if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
                 turnAmount = -1;
             }
@@ -97,13 +97,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             Matrix orientationMatrix = Matrix.CreateRotationY(ForwardDirection);
 
             Vector3 movement = Vector3.Zero;
-            if (keyboardState.IsKeyDown(Keys.W))
+            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
             {
                 movement.Z = 1;
             }
-            else if (keyboardState.IsKeyDown(Keys.S))
+            else if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
             {
-                movement.Z = 1;
+                movement.Z = -1;
             }
             else if (gamePadState.ThumbSticks.Left.Y != 0)
             {
