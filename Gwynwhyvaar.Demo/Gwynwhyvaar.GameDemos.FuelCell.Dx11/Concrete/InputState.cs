@@ -163,5 +163,62 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
                     IsButtonReleased(button, PlayerIndex.Four, out playerIndex));
             }
         }
+        
+        // helpers
+        public Vector2 GetThumbStickLeft(PlayerIndex? controllingPlayer)
+        {
+            PlayerIndex playerIndex;
+            return GetThumbStickLeft(controllingPlayer, out playerIndex);
+        }
+        public Vector2 GetThumbStickLeft(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if(controllingPlayer.HasValue)
+            {
+                playerIndex =controllingPlayer.Value;
+                int x = ((int)playerIndex);
+                return CurrentGamePadStates[x].ThumbSticks.Left;
+            }
+            else
+            {
+                for(int index =0; index <_maxGamePadInputs; index++)
+                {
+                    if (CurrentGamePadStates[index].IsConnected)
+                    {
+                        playerIndex = (PlayerIndex)index;
+                        return CurrentGamePadStates[index].ThumbSticks.Left;
+                    }
+                }
+                playerIndex = PlayerIndex.One;
+                return Vector2.Zero;
+            }
+        }
+        public Vector2 GetThumbStickRight(PlayerIndex? controllingPlayer)
+        {
+            PlayerIndex playerIndex;
+            return GetThumbStickRight(controllingPlayer, out playerIndex);
+        }
+        public Vector2 GetThumbStickRight(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if(controllingPlayer.HasValue)
+            {
+                playerIndex = controllingPlayer.Value;
+                int x = ((int)playerIndex);
+                return CurrentGamePadStates[x].ThumbSticks.Right;
+            }
+            else
+            {
+                for(int x=0; x< _maxGamePadInputs; x++)
+                {
+                    if (CurrentGamePadStates[x].IsConnected)
+                    {
+                        playerIndex = (PlayerIndex)x;
+                        return CurrentGamePadStates[x].ThumbSticks.Right;
+                    }
+                }
+                playerIndex = PlayerIndex.One;
+                return Vector2.Zero;
+            }
+        }
+
     }
 }
