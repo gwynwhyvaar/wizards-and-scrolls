@@ -13,6 +13,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
 {
     public class InputState : IInputState
     {
+        private readonly Game _game;
         private readonly int _maxGamePadInputs;
 
         public KeyboardState CurrentKeyboardState;
@@ -28,8 +29,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
         public TouchCollection TouchState;
 
         public readonly List<GestureSample> Gestures = new List<GestureSample>();
-        public InputState()
+        public InputState(Game game)
         {
+            if (game == null)
+            {
+                throw new ArgumentNullException("game", "Game object cannot be null.");
+            }
+            _game = game;
             _maxGamePadInputs = GameConstants.MaxGamePadInputs;
 
             CurrentKeyboardState = new KeyboardState();
@@ -44,6 +50,12 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
             LastGamePadStates = new GamePadState[_maxGamePadInputs];
 
             GamePadWasConnected = new bool[_maxGamePadInputs];
+
+            if (_game.Services.GetService(typeof(IInputState)) != null)
+            {
+                throw new ArgumentException("An Input state class is already register.");
+            }
+            _game.Services.AddService(typeof(IInputState), this);
         }
         public void Update()
         {
@@ -163,7 +175,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
                     IsButtonReleased(button, PlayerIndex.Four, out playerIndex));
             }
         }
-        
+
         // helpers
         public Vector2 GetThumbStickLeft(PlayerIndex? controllingPlayer)
         {
@@ -172,15 +184,15 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
         }
         public Vector2 GetThumbStickLeft(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
-            if(controllingPlayer.HasValue)
+            if (controllingPlayer.HasValue)
             {
-                playerIndex =controllingPlayer.Value;
+                playerIndex = controllingPlayer.Value;
                 int x = ((int)playerIndex);
                 return CurrentGamePadStates[x].ThumbSticks.Left;
             }
             else
             {
-                for(int index =0; index <_maxGamePadInputs; index++)
+                for (int index = 0; index < _maxGamePadInputs; index++)
                 {
                     if (CurrentGamePadStates[index].IsConnected)
                     {
@@ -199,7 +211,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
         }
         public Vector2 GetThumbStickRight(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
-            if(controllingPlayer.HasValue)
+            if (controllingPlayer.HasValue)
             {
                 playerIndex = controllingPlayer.Value;
                 int x = ((int)playerIndex);
@@ -207,7 +219,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
             }
             else
             {
-                for(int x=0; x< _maxGamePadInputs; x++)
+                for (int x = 0; x < _maxGamePadInputs; x++)
                 {
                     if (CurrentGamePadStates[x].IsConnected)
                     {
@@ -219,6 +231,97 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
                 return Vector2.Zero;
             }
         }
-
+        public float GetTriggerLeft(PlayerIndex? controllingPlayer)
+        {
+            PlayerIndex playerIndex;
+            return GetTriggerLeft(controllingPlayer, out playerIndex);
+        }
+        public float GetTriggerLeft(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if (controllingPlayer.HasValue)
+            {
+                playerIndex = controllingPlayer.Value;
+                int x = ((int)playerIndex);
+                return CurrentGamePadStates[x].Triggers.Left;
+            }
+            else
+            {
+                for (int x = 0; x < _maxGamePadInputs; x++)
+                {
+                    if (CurrentGamePadStates[x].IsConnected)
+                    {
+                        playerIndex = (PlayerIndex)x;
+                        return CurrentGamePadStates[x].Triggers.Left;
+                    }
+                }
+                playerIndex = PlayerIndex.One;
+                return 0;
+            }
+        }
+        public float GetTriggerRight(PlayerIndex? controllingPlayer)
+        {
+            PlayerIndex playerIndex;
+            return GetTriggerRight(controllingPlayer, out playerIndex);
+        }
+        public float GetTriggerRight(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if (controllingPlayer.HasValue)
+            {
+                playerIndex = controllingPlayer.Value;
+                int x = ((int)playerIndex);
+                return CurrentGamePadStates[x].Triggers.Right;
+            }
+            else
+            {
+                for (int x = 0; x < _maxGamePadInputs; x++)
+                {
+                    if (CurrentGamePadStates[x].IsConnected)
+                    {
+                        playerIndex = (PlayerIndex)x;
+                        return CurrentGamePadStates[x].Triggers.Right;
+                    }
+                }
+                playerIndex = PlayerIndex.One;
+                return 0;
+            }
+        }
+        public bool PlayerExit(PlayerIndex? controllingPlayer) => IsNewKeyPressed(Keys.Escape) || IsNewButtonPress(Buttons.Back, controllingPlayer, out _);
+        public bool StartGame(PlayerIndex? controllingPlayer) => IsNewKeyPressed(Keys.Enter) || IsNewButtonPress(Buttons.Start, controllingPlayer, out _);
+        public float GetPlayerTurn(PlayerIndex? controllingPlayer)
+        {
+            float turnAmount = 0;
+            Vector2 thumStickValue = GetThumbStickLeft(controllingPlayer);
+            if (IsKeyHeld(Keys.A) || IsKeyHeld(Keys.Left))
+            {
+                turnAmount = 1;
+            }
+            else if (IsKeyHeld(Keys.D) || IsKeyHeld(Keys.Right))
+            {
+                turnAmount = -1;
+            }
+            else if (thumStickValue.X != 0)
+            {
+                turnAmount = -thumStickValue.X;
+            }
+            return turnAmount;
+        }
+        public Vector3 GetPlayerMove(PlayerIndex? controllingPlayer)
+        {
+            Vector3 movement = Vector3.Zero;
+            Vector2 thumbstickValue = GetThumbStickLeft(controllingPlayer);
+            if (IsKeyHeld(Keys.W) || IsKeyHeld(Keys.Up))
+            {
+                movement.Z = 1;
+            }
+            else if (IsKeyHeld(Keys.S)|| IsKeyHeld(Keys.Down))
+            {
+                movement.Z = -1;
+            }
+            else if (thumbstickValue.Y != 0)
+            {
+                movement.Z = thumbstickValue.Y;
+            }
+            return movement;
+        }
     }
 }
