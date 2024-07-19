@@ -3,6 +3,7 @@
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Enums;
+using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
 
 using Microsoft.Xna.Framework;
@@ -40,16 +41,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
         private SpriteFont _statsFont;
 
-        // input keyboard state ..
-        private KeyboardState _lastKeyboardState;
-        private KeyboardState _currentKeyboardState;
-
-        // input gamepad state ..
-        private GamePadState _lastGamepadState;
-        private GamePadState _currentGamepadState;
-
         private GameObjectPosition _gameObjectPostion;
 
+        private IInputState _inputState;
         public WizardScrollsGameHome()
         {
             _roundTime = GameConstants.RoundTime;
@@ -66,15 +60,11 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _lastKeyboardState = new KeyboardState();
-            _currentKeyboardState = new KeyboardState();
-
-            _lastGamepadState = new GamePadState();
-            _currentGamepadState = new GamePadState();
-
             // set a default resolution of 853 x480
             _graphics.PreferredBackBufferWidth = 853;
             _graphics.PreferredBackBufferHeight = 480;
+
+            _inputState = new InputState(this);
         }
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
@@ -118,29 +108,30 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         }
         protected override void Update(GameTime gameTime)
         {
-            _lastKeyboardState = _currentKeyboardState;
-            _currentKeyboardState = Keyboard.GetState();
+            _inputState.Update();
 
-            _lastGamepadState = _currentGamepadState;
-            _currentGamepadState = GamePad.GetState(PlayerIndex.One);
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (_inputState.PlayerExit(PlayerIndex.One))
             {
                 Exit();
             }
 
             if (_currentGameState == GameStateEnum.Loading)
             {
-                if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
+                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
+                //{
+                //    // reset function
+                //    ResetGame(gameTime, _aspectRatio);
+                //}
+                if (_inputState.StartGame(PlayerIndex.One))
                 {
-                    // reset function
                     ResetGame(gameTime, _aspectRatio);
                 }
             }
 
             if ((_currentGameState == GameStateEnum.Running))
             {
-                _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
+                // _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
+                _wizard.Update(_inputState, _rockBarriers);
                 _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, _aspectRatio);
 
                 _retrievedScrolls = 0;
@@ -175,9 +166,13 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                     catch { }
                 }
                 // reset the world
-                if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
+                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
+                //{
+                //    // reset function
+                //    ResetGame(gameTime, _aspectRatio);
+                //}
+                if (_inputState.StartGame(PlayerIndex.One))
                 {
-                    // reset function
                     ResetGame(gameTime, _aspectRatio);
                 }
             }

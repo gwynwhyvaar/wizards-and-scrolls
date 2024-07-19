@@ -5,7 +5,6 @@ using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,19 +15,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
     {
         public float ForwardDirection { get; set; } = 0.0f;
         public int MaxRange { get; set; } = GameConstants.MaxRange;
-
-        //private SoundEffect _wizardRumble;
-        //private SoundEffect WizardRumble
-        //{
-        //    get
-        //    {
-        //        return _wizardRumble;
-        //    }
-        //    set
-        //    {
-        //        _wizardRumble = value;
-        //    }
-        //}
 
         public Wizard() : base()
         {
@@ -76,45 +62,15 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                 throw new Exception(ex.ToString());
             }
         }
-        public void Update(GamePadState gamePadState, KeyboardState keyboardState, RockBarrier[] rockBarriers)
+        public void Update(IInputState inputState, RockBarrier[] rockBarriers)
         {
             Vector3 futurePosition = Position;
-            float turnAmount = 0;
 
-            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-            {
-                turnAmount = 1;
-            }
-            else if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-            {
-                turnAmount = -1;
-            }
-            else if (gamePadState.ThumbSticks.Left.X != 0)
-            {
-                turnAmount = -gamePadState.ThumbSticks.Left.X;
-            }
-            ForwardDirection += turnAmount * GameConstants.TurnSpeed;
+            ForwardDirection += inputState.GetPlayerTurn(PlayerIndex.One) * GameConstants.TurnSpeed;
+
             Matrix orientationMatrix = Matrix.CreateRotationY(ForwardDirection);
 
-            Vector3 movement = Vector3.Zero;
-            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-            {
-                movement.Z = 1;
-            }
-            else if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-            {
-                movement.Z = -1;
-            }
-            else if (gamePadState.ThumbSticks.Left.Y != 0)
-            {
-                movement.Z = gamePadState.ThumbSticks.Left.Y;
-            }
-
-            Vector3 speed = Vector3.Transform(movement, orientationMatrix);
-            //if (speed != Vector3.Zero)
-            //{
-            //    WizardRumble.Play();
-            //}
+            Vector3 speed = Vector3.Transform(inputState.GetPlayerMove(PlayerIndex.One), orientationMatrix);
 
             speed *= GameConstants.Velocity;
             futurePosition = Position + speed;
@@ -142,7 +98,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                 return false;
             }
             // dont allow moving through a rock barrier
-            if(CheckForBarrierCollision(futureBoundingSphere, rockBarriers))
+            if (CheckForBarrierCollision(futureBoundingSphere, rockBarriers))
             {
                 return false;
             }
@@ -150,7 +106,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
         }
         private bool CheckForBarrierCollision(BoundingSphere wizardBoundingSphere, RockBarrier[] rockBarriers)
         {
-            for(int i = 0; i < rockBarriers.Length; i++)
+            for (int i = 0; i < rockBarriers.Length; i++)
             {
                 if (wizardBoundingSphere.Intersects(rockBarriers[i].BoundingSphere))
                 {

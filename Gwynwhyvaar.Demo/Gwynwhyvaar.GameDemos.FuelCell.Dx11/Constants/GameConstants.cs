@@ -42,5 +42,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
         public const string PlayAgainText = "Press Enter/Start to play again or Esc/Back to quit";
         public const string Instructions1Text = "Retrieve all Scrolls before time runs out.";
         public const string Instructions2Text = "Control Wizard using keyboard (A, D, W, S) or the left thumbstick.";
+
+        // inut state management -this handles the amount of gamepads supported
+        public const int MaxGamePadInputs = 4;
+
     }
 }
