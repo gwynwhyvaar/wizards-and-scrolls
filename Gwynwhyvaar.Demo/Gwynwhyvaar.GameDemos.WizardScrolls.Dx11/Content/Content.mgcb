@@ -160,7 +160,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.225
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/gravestone.fbx
@@ -198,7 +198,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.125
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/idol.fbx

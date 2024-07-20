@@ -22,6 +22,9 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const int NumScrolls = 12;
         public const int NumRockBarriers = 40;
         public const int NumCloudsBarriers = 50;
+        public const int NumTombstones = 10;
+        public const int NumTrees = 20;
+        public const int NumObelisk = 1;
         public const int NumFoliage = 2560;
         public const int MinDistance = 10;
         public const int MaxDistance = 90;

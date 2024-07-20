@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
@@ -10,7 +11,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
 {
     public class GameObjectPosition : IGameObjectPositionInterface
     {
-        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, FoliageGameObject[] foliages)
+        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages)
         {
             int min = GameConstants.MinDistance;
             int max = GameConstants.MaxDistance;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
@@ -32,7 +33,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private Scroll[] _scrolls;
         private RockBarrier[] _rockBarriers;
         private CloudsGameObject[] _clouds;
-        private FoliageGameObject[] _foliages;
+        private FoliageGameObject[] _foliages, _tombStones, _trees, _obelisks;
 
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
@@ -45,6 +46,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private GameObjectPosition _gameObjectPostion;
 
         private IInputState _inputState;
+
+        private List<FoliageGameObject> _foliageList;
         public WizardScrollsGameHome()
         {
             _roundTime = GameConstants.RoundTime;
@@ -289,7 +292,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             }
 
             // 5. draw the clouds ...
-            foreach (FoliageGameObject foliage in _foliages)
+            foreach (FoliageGameObject foliage in _foliageList)
             {
                 foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
@@ -325,6 +328,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         }
         private void InitializeGameField()
         {
+            _foliageList = new List<FoliageGameObject>();
+
             int randomRockBarrier = _random.Next(3);
             string rockBarrierName = null;
 
@@ -361,14 +366,49 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 
             // init the foliages
             _foliages = new FoliageGameObject[GameConstants.NumFoliage];
-            // loop through the cloud game objects
+            // loop through the grass game objects
             for (int x = 0; x < GameConstants.NumFoliage; x++)
             {
                 _foliages[x] = new FoliageGameObject();
                 _foliages[x].LoadContent(Content, "grass");
+
+                _foliageList.Add(_foliages[x]);
+            }
+
+            // init the tombstones
+            _tombStones = new FoliageGameObject[GameConstants.NumTombstones];
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumTombstones; x++)
+            {
+                _tombStones[x] = new FoliageGameObject();
+                _tombStones[x].LoadContent(Content, "gravestone");
+
+                _foliageList.Add(_tombStones[x]);
+            }
+
+            // init the trees
+            _trees = new FoliageGameObject[GameConstants.NumTrees];
+            // loop through the tree game objects
+            for (int x = 0; x < GameConstants.NumTrees; x++)
+            {
+                _trees[x] = new FoliageGameObject();
+                _trees[x].LoadContent(Content, "tree");
+
+                _foliageList.Add(_trees[x]);
+            }
+
+            // init the foliages
+            _obelisks = new FoliageGameObject[GameConstants.NumObelisk];
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumObelisk; x++)
+            {
+                _obelisks[x] = new FoliageGameObject();
+                _obelisks[x].LoadContent(Content, "obelisk");
+
+                _foliageList.Add(_obelisks[x]);
             }
             // Place Scrolls, clouds And Rocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliages);
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList);
         }
         private void DrawWinOrLossScreen(string gameResult)
         {
