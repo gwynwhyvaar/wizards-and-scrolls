@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
@@ -24,9 +25,42 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
         {
             get { return _guid; }
         }
+        public string ModelPath
+        {
+            get
+            {
+                return _modelPath;
+            }
+        }
+        public string ModelName
+        {
+            get { return _modelName; }
+        }
         public void Draw(Matrix view, Matrix projection)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                Matrix translateMatrix = Matrix.CreateTranslation(Position);
+                Matrix worldMatrix = translateMatrix;
+                foreach (ModelMesh mesh in Model.Meshes)
+                {
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.World = worldMatrix;
+                        effect.View = view;
+                        effect.Projection = projection;
+                        effect.SetSolidEffect();
+                    }
+                    mesh.Draw();
+                }
+            }
+            catch (Exception ex)
+            {
+                // log it
+                ex.LogError();
+                // throw it ..
+                throw new Exception(ex.Message);
+            }
         }
 
         public void LoadContent(ContentManager content, string modelName)

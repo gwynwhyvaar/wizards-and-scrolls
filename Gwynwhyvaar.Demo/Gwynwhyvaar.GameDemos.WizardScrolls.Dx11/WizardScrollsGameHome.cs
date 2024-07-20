@@ -3,6 +3,7 @@
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Enums;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
@@ -31,6 +32,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private Scroll[] _scrolls;
         private RockBarrier[] _rockBarriers;
         private CloudsGameObject[] _clouds;
+        private FoliageGameObject[] _foliages;
 
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
@@ -51,7 +53,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             _graphics = new GraphicsDeviceManager(this);
 
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = GameConstants.IsFullScreen;
             _graphics.PreferMultiSampling = true;
 
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
@@ -68,7 +70,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             _graphics.PreferMultiSampling = true;
-            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 16;
+            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = GameConstants.MultiSampleCount;
         }
         protected override void Initialize()
         {
@@ -124,7 +126,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 
             if ((_currentGameState == GameStateEnum.Running))
             {
-                // _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
                 _wizard.Update(_inputState, _rockBarriers);
                 _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, _aspectRatio);
 
@@ -265,6 +266,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         {
             // 1. the terrain
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
+
             // 2. the scroll
             foreach (Scroll scroll in _scrolls)
             {
@@ -273,18 +275,26 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
                 }
             }
+
             // 3. the rock barriers
             foreach (RockBarrier rockBarrier in _rockBarriers)
             {
                 rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
+
             // 4. draw the clouds ...
             foreach (CloudsGameObject cloud in _clouds)
             {
                 cloud.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 5. the player avatar -zee the wizard ov war!
+            // 5. draw the clouds ...
+            foreach (FoliageGameObject foliage in _foliages)
+            {
+                foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+            }
+
+            // 6. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
 
             DrawStats();
@@ -308,14 +318,18 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 MediaPlayer.Volume = 0.5f;
                 MediaPlayer.Play(_backgroundMusic);
             }
-            catch { }
+            catch (Exception e)
+            {
+                e.LogError();
+            }
         }
         private void InitializeGameField()
         {
-            // init the rock barriers
-            _rockBarriers = new RockBarrier[GameConstants.NumRockBarriers];
             int randomRockBarrier = _random.Next(3);
             string rockBarrierName = null;
+
+            // init the rock barriers
+            _rockBarriers = new RockBarrier[GameConstants.NumRockBarriers];
             for (int x = 0; x < GameConstants.NumRockBarriers; x++)
             {
                 switch (randomRockBarrier)
@@ -335,16 +349,26 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 // reset the random value
                 randomRockBarrier = _random.Next(3);
             }
+
             // init the clouds
             _clouds = new CloudsGameObject[GameConstants.NumCloudsBarriers];
             // loop through the cloud game objects
-            for(int x = 0; x < GameConstants.NumCloudsBarriers; x++)
+            for (int x = 0; x < GameConstants.NumCloudsBarriers; x++)
             {
                 _clouds[x] = new CloudsGameObject();
                 _clouds[x].LoadContent(Content, "cloud");
             }
-            // PlaceScrollsAndRocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds);
+
+            // init the foliages
+            _foliages = new FoliageGameObject[GameConstants.NumFoliage];
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumFoliage; x++)
+            {
+                _foliages[x] = new FoliageGameObject();
+                _foliages[x].LoadContent(Content, "grass");
+            }
+            // Place Scrolls, clouds And Rocks();
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliages);
         }
         private void DrawWinOrLossScreen(string gameResult)
         {

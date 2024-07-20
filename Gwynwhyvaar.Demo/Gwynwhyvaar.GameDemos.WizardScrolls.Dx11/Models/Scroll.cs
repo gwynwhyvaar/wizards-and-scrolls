@@ -60,7 +60,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                         effect.Projection = projection;
                         effect.SetSolidEffect();
                         // we make it glow ..
-                        effect.EmissiveColor = Color.DarkViolet.ToVector3();
+                        // effect.EmissiveColor = Color.Goldenrod.ToVector3();
                     }
                     mesh.Draw();
                 }
