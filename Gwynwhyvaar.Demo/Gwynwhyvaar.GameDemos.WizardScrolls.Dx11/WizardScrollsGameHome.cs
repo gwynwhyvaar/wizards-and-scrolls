@@ -97,9 +97,9 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // load the bounding sphere
-            _boundingSphere.Model = Content.Load<Model>("3d/sphere1uR");
+            _boundingSphere.SetModel(Content.Load<Model>("3d/sphere1uR"));
             // load the terrain
-            _groundGameObject.Model = Content.Load<Model>("3d/terrain");
+            _groundGameObject.SetModel(Content.Load<Model>("3d/terrain"));
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
             // load the background music
@@ -337,6 +337,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             }
             // init the clouds
             _clouds = new CloudsGameObject[GameConstants.NumCloudsBarriers];
+            // loop through the cloud game objects
             for(int x = 0; x < GameConstants.NumCloudsBarriers; x++)
             {
                 _clouds[x] = new CloudsGameObject();

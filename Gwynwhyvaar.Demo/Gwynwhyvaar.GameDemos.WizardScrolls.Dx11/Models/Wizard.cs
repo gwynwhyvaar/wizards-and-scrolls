@@ -21,7 +21,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 
         public void LoadContent(ContentManager content, string modelName)
         {
-            Model = content.Load<Model>($"3d/{modelName}");
+            _tempModel = content.Load<Model>($"3d/{modelName}");
 
             BoundingSphere = CalculateBoundingSphere();
             // .......

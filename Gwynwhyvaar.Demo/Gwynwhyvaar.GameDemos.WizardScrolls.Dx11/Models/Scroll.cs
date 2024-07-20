@@ -33,7 +33,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
         }
         public void LoadContent(ContentManager contentManager, string modelName)
         {
-            Model = contentManager.Load<Model>($"3d/{modelName}");
+            _tempModel = contentManager.Load<Model>($"3d/{modelName}");
             ScrollCollect = contentManager.Load<SoundEffect>("audio/bonus-earned");
 
             Position = Vector3.Down;

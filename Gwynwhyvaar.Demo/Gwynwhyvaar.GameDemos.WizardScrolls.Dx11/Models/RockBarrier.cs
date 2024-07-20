@@ -19,7 +19,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 
         public void LoadContent(ContentManager contentManager, string modelName)
         {
-            Model = contentManager.Load<Model>($"3d/{modelName}");
+            _tempModel = contentManager.Load<Model>($"3d/{modelName}");
+
             Position = Vector3.Down;
             RockBarrierType = modelName;
             BoundingSphere = CalculateBoundingSphere();
