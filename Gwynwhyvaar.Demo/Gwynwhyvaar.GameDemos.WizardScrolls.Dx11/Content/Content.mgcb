@@ -127,6 +127,25 @@
 /processorParam:TextureFormat=Compressed
 /build:3d/cloud.fbx
 
+#begin 3d/grass.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.125
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:3d/grass.fbx
+
 #begin 3d/gravestone.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -141,7 +160,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.225
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/gravestone.fbx
@@ -179,7 +198,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.125
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/idol.fbx
@@ -255,7 +274,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.5
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:3d/scroll_small.fbx

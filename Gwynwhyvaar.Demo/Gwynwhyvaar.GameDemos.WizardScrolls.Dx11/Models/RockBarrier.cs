@@ -1,50 +1,36 @@
 ﻿using System;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
-    public record class Scroll : GameObject, IGameObjectInterface
+    public record class RockBarrier: GameObject, IGameObjectInterface
     {
-        public bool IsRetrieved { get; set; }
+        public string RockBarrierType { get; set; }
+        public RockBarrier(): base()
+        {
+        }
 
-        private SoundEffect _scrollCollect;
-        private SoundEffect ScrollCollect
-        {
-            get
-            {
-                return _scrollCollect;
-            }
-            set
-            {
-                _scrollCollect = value;
-            }
-        }
-        public Scroll() : base()
-        {
-            IsRetrieved = false;
-        }
         public void LoadContent(ContentManager contentManager, string modelName)
         {
-            Model = contentManager.Load<Model>($"3d/{modelName}");
-            ScrollCollect = contentManager.Load<SoundEffect>("audio/bonus-earned");
+            _tempModel = contentManager.Load<Model>($"3d/{modelName}");
 
             Position = Vector3.Down;
+            RockBarrierType = modelName;
             BoundingSphere = CalculateBoundingSphere();
-
             // .......
             BoundingSphere scaledSphere;
             scaledSphere = BoundingSphere;
             scaledSphere.Radius *= GameConstants.ScrollBoundingSphereFactor;
             BoundingSphere = new BoundingSphere(scaledSphere.Center, scaledSphere.Radius);
         }
+
         public void Draw(Matrix view, Matrix projection)
         {
             try
@@ -58,9 +44,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
                         effect.World = worldMatrix;
                         effect.View = view;
                         effect.Projection = projection;
+
                         effect.SetSolidEffect();
-                        // we make it glow ..
-                        effect.EmissiveColor = Color.DarkViolet.ToVector3();
                     }
                     mesh.Draw();
                 }
@@ -68,16 +53,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
             catch (Exception ex)
             {
                 // log it
+                ex.LogError();
+                // throw ..
                 throw new Exception(ex.Message);
-            }
-        }
-        public void Update(BoundingSphere wizardBoundingSphere)
-        {
-            if(wizardBoundingSphere.Intersects(this.BoundingSphere) &&!this.IsRetrieved)
-            {
-                this.IsRetrieved = true;
-
-                ScrollCollect.Play();
             }
         }
     }

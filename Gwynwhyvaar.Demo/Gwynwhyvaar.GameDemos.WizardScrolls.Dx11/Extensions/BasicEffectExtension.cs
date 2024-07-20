@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions
 {
     public static class BasicEffectExtension
     {

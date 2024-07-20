@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
 using Microsoft.Xna.Framework;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
 {
     public class GameObjectPosition : IGameObjectPositionInterface
     {
-        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds)
+        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages)
         {
             int min = GameConstants.MinDistance;
             int max = GameConstants.MaxDistance;
@@ -43,6 +44,14 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
             {
                 cloud.Position = GenerateRandomPosition(min, max, random);
                 cloud.Position.Y = 20;
+            }
+
+            // place foliage
+            foreach (FoliageGameObject foliage in foliages)
+            {
+                foliage.Position = GenerateRandomPosition(min, max, random);
+                // leave the default Y position -no need to change it.
+                // foliage.Position.Y = 20;
             }
         }
         private Vector3 GenerateRandomPosition(int min, int max, Scroll[] scrolls, RockBarrier[] rockBarriers, Random random)

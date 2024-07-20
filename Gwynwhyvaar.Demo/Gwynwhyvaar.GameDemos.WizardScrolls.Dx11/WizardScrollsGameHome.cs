@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Enums;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Enums;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 {
     public class WizardScrollsGameHome : Game
     {
@@ -32,6 +33,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private Scroll[] _scrolls;
         private RockBarrier[] _rockBarriers;
         private CloudsGameObject[] _clouds;
+        private FoliageGameObject[] _foliages, _tombStones, _trees, _obelisks;
 
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
@@ -44,6 +46,8 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private GameObjectPosition _gameObjectPostion;
 
         private IInputState _inputState;
+
+        private List<FoliageGameObject> _foliageList;
         public WizardScrollsGameHome()
         {
             _roundTime = GameConstants.RoundTime;
@@ -52,7 +56,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
             _graphics = new GraphicsDeviceManager(this);
 
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = GameConstants.IsFullScreen;
             _graphics.PreferMultiSampling = true;
 
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
@@ -69,7 +73,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         private void _graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             _graphics.PreferMultiSampling = true;
-            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 16;
+            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = GameConstants.MultiSampleCount;
         }
         protected override void Initialize()
         {
@@ -98,9 +102,9 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // load the bounding sphere
-            _boundingSphere.Model = Content.Load<Model>("3d/sphere1uR");
+            _boundingSphere.SetModel(Content.Load<Model>("3d/sphere1uR"));
             // load the terrain
-            _groundGameObject.Model = Content.Load<Model>("3d/terrain");
+            _groundGameObject.SetModel(Content.Load<Model>("3d/terrain"));
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
             // load the background music
@@ -117,11 +121,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             if (_currentGameState == GameStateEnum.Loading)
             {
-                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
-                //{
-                //    // reset function
-                //    ResetGame(gameTime, _aspectRatio);
-                //}
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);
@@ -130,7 +129,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             if ((_currentGameState == GameStateEnum.Running))
             {
-                // _wizard.Update(_currentGamepadState, _currentKeyboardState, _rockBarriers);
                 _wizard.Update(_inputState, _rockBarriers);
                 _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, _aspectRatio);
 
@@ -165,12 +163,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                     }
                     catch { }
                 }
-                // reset the world
-                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
-                //{
-                //    // reset function
-                //    ResetGame(gameTime, _aspectRatio);
-                //}
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);
@@ -277,6 +269,7 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
         {
             // 1. the terrain
             _drawModel.DrawTerrain(_groundGameObject.Model, _gameCameraObject);
+
             // 2. the scroll
             foreach (Scroll scroll in _scrolls)
             {
@@ -285,18 +278,26 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                     scroll.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
                 }
             }
+
             // 3. the rock barriers
             foreach (RockBarrier rockBarrier in _rockBarriers)
             {
                 rockBarrier.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
+
             // 4. draw the clouds ...
             foreach (CloudsGameObject cloud in _clouds)
             {
                 cloud.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 5. the player avatar -zee the wizard ov war!
+            // 5. draw the clouds ...
+            foreach (FoliageGameObject foliage in _foliageList)
+            {
+                foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+            }
+
+            // 6. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
 
             DrawStats();
@@ -320,14 +321,20 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 MediaPlayer.Volume = 0.5f;
                 MediaPlayer.Play(_backgroundMusic);
             }
-            catch { }
+            catch (Exception e)
+            {
+                e.LogError();
+            }
         }
         private void InitializeGameField()
         {
-            // init the rock barriers
-            _rockBarriers = new RockBarrier[GameConstants.NumRockBarriers];
+            _foliageList = new List<FoliageGameObject>();
+
             int randomRockBarrier = _random.Next(3);
             string rockBarrierName = null;
+
+            // init the rock barriers
+            _rockBarriers = new RockBarrier[GameConstants.NumRockBarriers];
             for (int x = 0; x < GameConstants.NumRockBarriers; x++)
             {
                 switch (randomRockBarrier)
@@ -347,15 +354,61 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                 // reset the random value
                 randomRockBarrier = _random.Next(3);
             }
+
             // init the clouds
             _clouds = new CloudsGameObject[GameConstants.NumCloudsBarriers];
-            for(int x = 0; x < GameConstants.NumCloudsBarriers; x++)
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumCloudsBarriers; x++)
             {
                 _clouds[x] = new CloudsGameObject();
                 _clouds[x].LoadContent(Content, "cloud");
             }
-            // PlaceScrollsAndRocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds);
+
+            // init the foliages
+            _foliages = new FoliageGameObject[GameConstants.NumFoliage];
+            // loop through the grass game objects
+            for (int x = 0; x < GameConstants.NumFoliage; x++)
+            {
+                _foliages[x] = new FoliageGameObject();
+                _foliages[x].LoadContent(Content, "grass");
+
+                _foliageList.Add(_foliages[x]);
+            }
+
+            // init the tombstones
+            _tombStones = new FoliageGameObject[GameConstants.NumTombstones];
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumTombstones; x++)
+            {
+                _tombStones[x] = new FoliageGameObject();
+                _tombStones[x].LoadContent(Content, "gravestone");
+
+                _foliageList.Add(_tombStones[x]);
+            }
+
+            // init the trees
+            _trees = new FoliageGameObject[GameConstants.NumTrees];
+            // loop through the tree game objects
+            for (int x = 0; x < GameConstants.NumTrees; x++)
+            {
+                _trees[x] = new FoliageGameObject();
+                _trees[x].LoadContent(Content, "tree");
+
+                _foliageList.Add(_trees[x]);
+            }
+
+            // init the foliages
+            _obelisks = new FoliageGameObject[GameConstants.NumObelisk];
+            // loop through the cloud game objects
+            for (int x = 0; x < GameConstants.NumObelisk; x++)
+            {
+                _obelisks[x] = new FoliageGameObject();
+                _obelisks[x].LoadContent(Content, "obelisk");
+
+                _foliageList.Add(_obelisks[x]);
+            }
+            // Place Scrolls, clouds And Rocks();
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList);
         }
         private void DrawWinOrLossScreen(string gameResult)
         {

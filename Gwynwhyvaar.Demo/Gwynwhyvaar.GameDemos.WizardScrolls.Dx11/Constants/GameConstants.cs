@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
 {
     public class GameConstants
     {
@@ -18,10 +18,14 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
         // The MaxRange member is used to prevent the player -avatar from moving off the playing field
         public const int MaxRange = 98;
 
-        // scrolls and objects settings
+        // scrolls, clouds , foliage and varying objects settings
         public const int NumScrolls = 12;
         public const int NumRockBarriers = 40;
-        public const int NumCloudsBarriers = 20;
+        public const int NumCloudsBarriers = 50;
+        public const int NumTombstones = 10;
+        public const int NumTrees = 20;
+        public const int NumObelisk = 1;
+        public const int NumFoliage = 2560;
         public const int MinDistance = 10;
         public const int MaxDistance = 90;
         public const int MaxRangeTerrain = 98;
@@ -46,5 +50,10 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
         // inut state management -this handles the amount of gamepads supported
         public const int MaxGamePadInputs = 4;
 
+        // multi-sample count
+        public const int MultiSampleCount = 32;
+
+        // fullscreen settings
+        public const bool IsFullScreen = false;
     }
 }

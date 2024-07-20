@@ -1,4 +1,4 @@
-﻿namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Enums
+﻿namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Enums
 {
     public enum GameStateEnum
     {

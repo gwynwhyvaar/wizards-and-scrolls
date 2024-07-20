@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
 {
     public class InputState : IInputState
     {
