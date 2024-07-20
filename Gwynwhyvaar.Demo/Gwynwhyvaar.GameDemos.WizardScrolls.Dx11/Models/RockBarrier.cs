@@ -52,6 +52,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
             catch (Exception ex)
             {
                 // log it
+                ex.LogError();
+                // throw ..
                 throw new Exception(ex.Message);
             }
         }

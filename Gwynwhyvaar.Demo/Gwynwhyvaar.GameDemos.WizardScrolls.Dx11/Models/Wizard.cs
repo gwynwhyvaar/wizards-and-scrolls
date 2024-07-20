@@ -22,7 +22,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
         public void LoadContent(ContentManager content, string modelName)
         {
             Model = content.Load<Model>($"3d/{modelName}");
-            // WizardRumble = content.Load<SoundEffect>("audio/dash2");
 
             BoundingSphere = CalculateBoundingSphere();
             // .......
@@ -57,6 +56,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
             }
             catch (Exception ex)
             {
+                ex.LogError();
                 throw new Exception(ex.ToString());
             }
         }

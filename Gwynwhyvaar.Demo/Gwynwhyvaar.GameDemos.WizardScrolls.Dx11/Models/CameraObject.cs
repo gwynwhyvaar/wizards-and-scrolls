@@ -10,10 +10,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
         public Vector3 TargetOffset { get; set; } = new Vector3(0, 5, 0);
         public Matrix ViewMatrix { get; set; } = Matrix.Identity;
         public Matrix ProjectionMatrix { get; set; } = Matrix.Identity;
-        public CameraObject()
-        {
-            // ...
-        }
+
         public void Update(float avataYaw, Vector3 position, float aspectRatio)
         {
             Matrix rotationMatrix = Matrix.CreateRotationY(avataYaw);
