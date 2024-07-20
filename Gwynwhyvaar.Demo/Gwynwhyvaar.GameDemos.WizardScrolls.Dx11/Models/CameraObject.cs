@@ -1,8 +1,8 @@
-﻿using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
+﻿using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
 
 using Microsoft.Xna.Framework;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
     public class CameraObject
     {

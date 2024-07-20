@@ -1,17 +1,16 @@
 ﻿using System;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Enums;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Enums;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 {
     public class WizardScrollsGameHome : Game
     {
@@ -117,11 +116,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
 
             if (_currentGameState == GameStateEnum.Loading)
             {
-                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
-                //{
-                //    // reset function
-                //    ResetGame(gameTime, _aspectRatio);
-                //}
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);
@@ -165,12 +159,6 @@ namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11
                     }
                     catch { }
                 }
-                // reset the world
-                //if ((_lastKeyboardState.IsKeyDown(Keys.Enter) && (_currentKeyboardState.IsKeyUp(Keys.Enter))) || _currentGamepadState.Buttons.Start == ButtonState.Pressed)
-                //{
-                //    // reset function
-                //    ResetGame(gameTime, _aspectRatio);
-                //}
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);

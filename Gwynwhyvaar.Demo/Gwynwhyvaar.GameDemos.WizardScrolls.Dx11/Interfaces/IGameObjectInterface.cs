@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces
 {
     public interface IGameObjectInterface
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
 {
     public class GameConstants
     {

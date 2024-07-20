@@ -1,15 +1,13 @@
 ﻿using System;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Extensions;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
     public record class Wizard : GameObject, IGameObjectInterface
     {

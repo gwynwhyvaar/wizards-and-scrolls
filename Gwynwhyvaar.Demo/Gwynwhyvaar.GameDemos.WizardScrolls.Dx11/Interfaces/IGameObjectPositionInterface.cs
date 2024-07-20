@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces
 {
     public interface IGameObjectPositionInterface
     {

@@ -1,12 +1,12 @@
 ﻿using System;
 
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Constants;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces;
-using Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
+using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models;
 
 using Microsoft.Xna.Framework;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Concrete
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
 {
     public class GameObjectPosition : IGameObjectPositionInterface
     {

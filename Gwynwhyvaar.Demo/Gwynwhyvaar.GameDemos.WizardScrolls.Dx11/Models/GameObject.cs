@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Models
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
     public record class GameObject()
     {

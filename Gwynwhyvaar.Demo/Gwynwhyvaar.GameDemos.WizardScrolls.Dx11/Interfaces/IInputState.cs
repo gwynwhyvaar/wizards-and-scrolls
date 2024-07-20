@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Gwynwhyvaar.GameDemos.FuelCell.Dx11.Interfaces
+namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces
 {
     public interface IInputState
     {
