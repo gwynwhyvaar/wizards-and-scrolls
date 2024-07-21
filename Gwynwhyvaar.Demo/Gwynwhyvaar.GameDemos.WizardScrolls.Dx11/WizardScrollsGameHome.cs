@@ -16,11 +16,15 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 {
     public class WizardScrollsGameHome : Game
     {
+        private int _totalScore = 0;
+        private int _currentLevel = 0;
         private int _retrievedScrolls = 0;
+        private int _levelPowerUpPickCount = 0;
 
         private TimeSpan _startTime, _roundTimer, _roundTime;
 
         private float _aspectRatio;
+        private float _modelRotation;
 
         private Song _backgroundMusic;
 
@@ -31,6 +35,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private Wizard _wizard;
 
         private Scroll[] _scrolls;
+        private PowerUpGameObject[] _powerUps;
         private RockBarrier[] _rockBarriers;
         private CloudsGameObject[] _clouds;
         private FoliageGameObject[] _foliages, _tombStones, _trees, _obelisks;
@@ -38,6 +43,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
         private CameraObject _gameCameraObject;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -62,7 +68,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
 
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
 
             // set a default resolution of 853 x480
             _graphics.PreferredBackBufferWidth = 853;
@@ -88,6 +94,13 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 _scrolls[index] = new Scroll();
                 _scrolls[index].LoadContent(Content, "scroll_small");
             }
+            // init the power ups
+            _powerUps = new PowerUpGameObject[GameConstants.NumPowerUpCount];
+            for (int x = 0; x < GameConstants.NumPowerUpCount; x++)
+            {
+                _powerUps[x] = new PowerUpGameObject();
+                _powerUps[x].LoadContent(Content, "hour_glass");
+            }
             // init the rock barriers
             InitializeGameField();
             // init and place the player avatar ** THE MOST IMPORTANT!
@@ -108,27 +121,28 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
             // load the background music
-            _backgroundMusic = Content.Load<Song>("audio/the-time-is-upon-us-in_game");
+            _backgroundMusic = Content.Load<Song>("audio/the-time-is-upon-us-bg_music");
         }
         protected override void Update(GameTime gameTime)
         {
             _inputState.Update();
-
             if (_inputState.PlayerExit(PlayerIndex.One))
             {
                 Exit();
             }
-
             if (_currentGameState == GameStateEnum.Loading)
             {
+                _currentLevel = 1;
+
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);
                 }
             }
-
             if ((_currentGameState == GameStateEnum.Running))
             {
+                _modelRotation += (float)gameTime.ElapsedGameTime.TotalMilliseconds * MathHelper.ToRadians(0.1f);
+
                 _wizard.Update(_inputState, _rockBarriers);
                 _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, _aspectRatio);
 
@@ -137,13 +151,29 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 foreach (Scroll scroll in _scrolls)
                 {
                     scroll.Update(_wizard.BoundingSphere);
+
                     if (scroll.IsRetrieved)
                     {
                         _retrievedScrolls++;
                     }
                 }
+                foreach (PowerUpGameObject powerUp in _powerUps)
+                {
+                    powerUp.Update(_wizard.BoundingSphere);
+                    if (powerUp.IsRetrieved && _levelPowerUpPickCount < GameConstants.NumPowerUpCount)
+                    {
+                        // increase the timer ..
+                        _roundTimer = _roundTimer.Add(TimeSpan.FromSeconds(GameConstants.PowerUpBonusSeconds));
+                        _levelPowerUpPickCount++;
+                    }
+                }
                 if (_retrievedScrolls == GameConstants.NumScrolls)
                 {
+                    // todo: update the total game score
+                    _totalScore = _totalScore + 100;
+                    // increase the level
+                    _currentLevel++;
+                    // set the gamestate to 'Won'
                     _currentGameState = GameStateEnum.Won;
                 }
                 _roundTimer -= gameTime.ElapsedGameTime;
@@ -152,7 +182,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     _currentGameState = GameStateEnum.Lost;
                 }
             }
-
             if ((_currentGameState == GameStateEnum.Won) || (_currentGameState == GameStateEnum.Lost))
             {
                 if (MediaPlayer.State == MediaState.Playing)
@@ -174,7 +203,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         {
             _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
             _graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
             switch (_currentGameState)
             {
                 case GameStateEnum.Loading:
@@ -187,7 +215,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     break;
                 case GameStateEnum.Won:
                     // draw won screen
-                    DrawWinOrLossScreen(GameConstants.GameWonText);
+                    DrawWinOrLossScreen(string.Format($"{GameConstants.GameWonText}{_totalScore}\n", _currentLevel.GetPreviousLevel()), GameStateEnum.Won);
                     break;
                 case GameStateEnum.Lost:
                     // draw lost creen
@@ -201,7 +229,9 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             float xOffSetText, yOffSetText;
 
             string text1 = GameConstants.TimeRemainingText;
-            string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumRockBarriers.ToString()}";
+            string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumScrolls.ToString()}";
+            string text3 = $"{GameConstants.HighScoreText} {_totalScore}";
+            string text4 = $"{GameConstants.LevelText}{_currentLevel}";
 
             Rectangle rectSafeArea;
 
@@ -220,6 +250,12 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             positionText.Y += textSize.Y;
 
             _spriteBatch.DrawString(_statsFont, text2, positionText, Color.White);
+            positionText.Y += textSize.Y;
+
+            _spriteBatch.DrawString(_statsFont, text3, positionText, Color.Yellow);
+            positionText.Y += textSize.Y;
+
+            _spriteBatch.DrawString(_statsFont, text4, positionText, Color.White);
             _spriteBatch.End();
 
             ResetRenderStates();
@@ -291,13 +327,22 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 cloud.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 5. draw the clouds ...
+            // 5. draw the foliage ...
             foreach (FoliageGameObject foliage in _foliageList)
             {
                 foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 6. the player avatar -zee the wizard ov war!
+            // 6. draw the power ups ...
+            foreach (PowerUpGameObject powerUp in _powerUps)
+            {
+                if (!powerUp.IsRetrieved)
+                {
+                    powerUp.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                }
+            }
+
+            // 7. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
 
             DrawStats();
@@ -310,6 +355,11 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             InitializeGameField();
 
             _retrievedScrolls = 0;
+            if (_currentGameState == GameStateEnum.Lost)
+            {
+                // reset the level
+                _currentLevel = 0;
+            }
             _startTime = gameTime.TotalGameTime;
             _roundTimer = _roundTime;
             _currentGameState = GameStateEnum.Running;
@@ -328,6 +378,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         }
         private void InitializeGameField()
         {
+            _levelPowerUpPickCount = 0;
             _foliageList = new List<FoliageGameObject>();
 
             int randomRockBarrier = _random.Next(3);
@@ -408,9 +459,9 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 _foliageList.Add(_obelisks[x]);
             }
             // Place Scrolls, clouds And Rocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList);
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList, _powerUps);
         }
-        private void DrawWinOrLossScreen(string gameResult)
+        private void DrawWinOrLossScreen(string gameResult, GameStateEnum gameStateEnum = GameStateEnum.Loading)
         {
             float xOffsetText, yOffsetText;
 
@@ -420,7 +471,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             xOffsetText = yOffsetText = 0;
 
             Vector2 resultText = _statsFont.MeasureString(gameResult);
-            Vector2 playAgainSizeText = _statsFont.MeasureString(GameConstants.PlayAgainText);
+            Vector2 playAgainSizeText = gameStateEnum == GameStateEnum.Won ? _statsFont.MeasureString(GameConstants.ProceedToNextLevelText) : _statsFont.MeasureString(GameConstants.PlayAgainText);
             Vector2 positionText;
 
             centerText = new Vector2(resultText.X / 2, resultText.Y / 2);
@@ -437,8 +488,17 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             xOffsetText = (viewportSize.X / 2 - centerText.X);
             positionText = new Vector2(xOffsetText, yOffsetText);
 
-            _spriteBatch.DrawString(_statsFont, GameConstants.PlayAgainText, positionText, Color.AntiqueWhite);
-            _spriteBatch.End();
+            if (gameStateEnum == GameStateEnum.Won)
+            {
+                // display the next level
+                _spriteBatch.DrawString(_statsFont, GameConstants.ProceedToNextLevelText, positionText, Color.AntiqueWhite);
+                _spriteBatch.End();
+            }
+            else
+            {
+                _spriteBatch.DrawString(_statsFont, GameConstants.PlayAgainText, positionText, Color.AntiqueWhite);
+                _spriteBatch.End();
+            }
 
             ResetRenderStates();
         }

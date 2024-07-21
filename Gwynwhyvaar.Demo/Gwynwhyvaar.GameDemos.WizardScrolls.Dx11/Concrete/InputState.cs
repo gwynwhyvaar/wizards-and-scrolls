@@ -313,13 +313,17 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
             {
                 movement.Z = 1;
             }
-            else if (IsKeyHeld(Keys.S)|| IsKeyHeld(Keys.Down))
+            else if (IsKeyHeld(Keys.S) || IsKeyHeld(Keys.Down))
             {
                 movement.Z = -1;
             }
             else if (thumbstickValue.Y != 0)
             {
                 movement.Z = thumbstickValue.Y;
+            }
+            else if (IsKeyPressed(Keys.Space) || IsButtonPressed(Buttons.RightShoulder, controllingPlayer, out _))
+            {
+                movement.Z = GameConstants.RunSpeed;
             }
             return movement;
         }

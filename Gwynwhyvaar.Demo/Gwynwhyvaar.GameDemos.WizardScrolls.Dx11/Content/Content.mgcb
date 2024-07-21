@@ -165,7 +165,7 @@
 /processorParam:TextureFormat=Compressed
 /build:3d/gravestone.fbx
 
-#begin 3d/grimoire.fbx
+#begin 3d/hour_glass.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -179,48 +179,10 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=1
+/processorParam:Scale=0.25
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:3d/grimoire.fbx
-
-#begin 3d/idol.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=0.125
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:3d/idol.fbx
-
-#begin 3d/library_tower.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:3d/library_tower.fbx
+/build:3d/hour_glass.fbx
 
 #begin 3d/obelisk.fbx
 /importer:FbxImporter
@@ -373,11 +335,11 @@
 /processorParam:Quality=Best
 /build:audio/bonus-earned.mp3
 
-#begin audio/the-time-is-upon-us-in_game.mp3
+#begin audio/the-time-is-upon-us-bg_music.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:audio/the-time-is-upon-us-in_game.mp3
+/build:audio/the-time-is-upon-us-bg_music.mp3
 
 #begin fonts/File.spritefont
 /importer:FontDescriptionImporter

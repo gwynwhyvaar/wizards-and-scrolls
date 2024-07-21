@@ -11,9 +11,12 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const float ViewAngle = 45.0f;
 
         // player -avatar constants
-        public const float Velocity = 0.75f;
+        public const float Velocity = 0.10f;
         public const float TurnSpeed = 0.025f;
         public const float HeightOffset = 0;
+
+        // run speed
+        public const int RunSpeed = 5;
 
         // The MaxRange member is used to prevent the player -avatar from moving off the playing field
         public const int MaxRange = 98;
@@ -29,6 +32,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const int MinDistance = 10;
         public const int MaxDistance = 90;
         public const int MaxRangeTerrain = 98;
+        public const int NumPowerUpCount = 1;
+        public const int PowerUpBonusSeconds = 10;
 
         //bounding sphere scaling factors
         public const float WizardBoundingSphereFactor = .7f;
@@ -36,16 +41,19 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const float RockBarrierBoundingSphereFactor = .7f;
 
         // game timer 
-        public static readonly TimeSpan RoundTime = TimeSpan.FromSeconds(30.25);
+        public static readonly TimeSpan RoundTime = TimeSpan.FromSeconds(60.25);
 
         // display text
         public const string TimeRemainingText = "Time Remaining: ";
         public const string ScrollsFoundText = "Scrolls Retrieved: ";
-        public const string GameWonText = "Game Won !";
+        public const string GameWonText = "Level {0} Completed !\nScore: ";
         public const string GameLostText = "Game Lost !";
         public const string PlayAgainText = "Press Enter/Start to play again or Esc/Back to quit";
+        public const string ProceedToNextLevelText = "Press Enter/Start to proceed to Next Level";
         public const string Instructions1Text = "Retrieve all Scrolls before time runs out.";
         public const string Instructions2Text = "Control Wizard using keyboard (A, D, W, S) or the left thumbstick.";
+        public const string LevelText = "Level: ";
+        public const string HighScoreText = "High-score: ";
 
         // inut state management -this handles the amount of gamepads supported
         public const int MaxGamePadInputs = 4;
