@@ -62,6 +62,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const int MultiSampleCount = 32;
 
         // fullscreen settings
-        public const bool IsFullScreen = false;
+        public const bool IsFullScreen = true;
     }
 }
