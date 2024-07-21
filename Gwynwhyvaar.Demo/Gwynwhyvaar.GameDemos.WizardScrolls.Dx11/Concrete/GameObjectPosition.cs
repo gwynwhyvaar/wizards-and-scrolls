@@ -11,7 +11,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
 {
     public class GameObjectPosition : IGameObjectPositionInterface
     {
-        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages)
+        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages, PowerUpGameObject[] powerUps)
         {
             int min = GameConstants.MinDistance;
             int max = GameConstants.MaxDistance;
@@ -27,6 +27,17 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
                 tempCenter.Z = scroll.Position.Z;
                 scroll.BoundingSphere = new BoundingSphere(tempCenter, scroll.BoundingSphere.Radius);
                 scroll.IsRetrieved = false;
+            }
+
+            // place power-ups
+            foreach (PowerUpGameObject powerUp in powerUps)
+            {
+                powerUp.Position = GenerateRandomPosition(min, max, scrolls, rockBarriers, random);
+                tempCenter = powerUp.BoundingSphere.Center;
+                tempCenter.X = powerUp.Position.X;
+                tempCenter.Z = powerUp.Position.Z;
+                powerUp.BoundingSphere = new BoundingSphere(tempCenter, powerUp.BoundingSphere.Radius);
+                powerUp.IsRetrieved = false;
             }
 
             // place rock barriers

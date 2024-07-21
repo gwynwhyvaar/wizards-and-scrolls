@@ -7,6 +7,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces
 {
     public interface IGameObjectPositionInterface
     {
-        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages);
+        public void PlaceScrollsAndRockBarriers(Scroll[] scrolls, RockBarrier[] rockBarriers, Random random, CloudsGameObject[] clouds, List<FoliageGameObject> foliages, PowerUpGameObject[] powerUps);
     }
 }

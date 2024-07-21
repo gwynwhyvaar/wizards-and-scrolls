@@ -29,6 +29,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const int MinDistance = 10;
         public const int MaxDistance = 90;
         public const int MaxRangeTerrain = 98;
+        public const int NumPowerUpCount = 1;
+        public const int PowerUpBonusSeconds = 10;
 
         //bounding sphere scaling factors
         public const float WizardBoundingSphereFactor = .7f;

@@ -33,6 +33,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private Wizard _wizard;
 
         private Scroll[] _scrolls;
+        private PowerUpGameObject[] _powerUps;
         private RockBarrier[] _rockBarriers;
         private CloudsGameObject[] _clouds;
         private FoliageGameObject[] _foliages, _tombStones, _trees, _obelisks;
@@ -90,6 +91,13 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 _scrolls[index] = new Scroll();
                 _scrolls[index].LoadContent(Content, "scroll_small");
             }
+            // init the power ups
+            _powerUps = new PowerUpGameObject[GameConstants.NumPowerUpCount];
+            for (int x = 0; x < GameConstants.NumPowerUpCount; x++)
+            {
+                _powerUps[x] = new PowerUpGameObject();
+                _powerUps[x].LoadContent(Content, "hour_glass");
+            }
             // init the rock barriers
             InitializeGameField();
             // init and place the player avatar ** THE MOST IMPORTANT!
@@ -141,6 +149,15 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     if (scroll.IsRetrieved)
                     {
                         _retrievedScrolls++;
+                    }
+                }
+                foreach (PowerUpGameObject powerUp in _powerUps)
+                {
+                    powerUp.Update(_wizard.BoundingSphere);
+                    if (powerUp.IsRetrieved)
+                    {
+                        // increase the timer ..
+                        _roundTimer.Add(TimeSpan.FromSeconds(GameConstants.PowerUpBonusSeconds));
                     }
                 }
                 if (_retrievedScrolls == GameConstants.NumScrolls)
@@ -309,7 +326,16 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 6. the player avatar -zee the wizard ov war!
+            // 6. draw the power ups ...
+            foreach (PowerUpGameObject powerUp in _powerUps)
+            {
+                if (!powerUp.IsRetrieved)
+                {
+                    powerUp.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
+                }
+            }
+
+            // 7. the player avatar -zee the wizard ov war!
             _wizard.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
 
             DrawStats();
@@ -425,7 +451,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 _foliageList.Add(_obelisks[x]);
             }
             // Place Scrolls, clouds And Rocks();
-            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList);
+            _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList, _powerUps);
         }
         private void DrawWinOrLossScreen(string gameResult, GameStateEnum gameStateEnum = GameStateEnum.Loading)
         {
