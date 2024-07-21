@@ -13,7 +13,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
     public record class Scroll : GameObject, IGameObjectInterface
     {
-        private float _modelRotation;
         public bool IsRetrieved { get; set; }
 
         private SoundEffect _scrollCollect;
@@ -56,12 +55,14 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                 {
                     foreach (BasicEffect effect in mesh.Effects)
                     {
-                        effect.World = worldMatrix * Matrix.CreateRotationX(_modelRotation);
+                        effect.World = worldMatrix;
                         effect.View = view;
                         effect.Projection = projection;
                         effect.SetSolidEffect();
-                        // we make it glow ..
-                        // effect.EmissiveColor = Color.Goldenrod.ToVector3();
+                        if (mesh.Name.Equals("glass_top") || mesh.Name.Equals("glass_bott"))
+                        {
+                            effect.EmissiveColor = Color.LightBlue.ToVector3();
+                        }
                     }
                     mesh.Draw();
                 }
@@ -74,10 +75,9 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                 throw new Exception(ex.Message);
             }
         }
-        public void SetRotation(float rotation) => _modelRotation = rotation;
         public void Update(BoundingSphere wizardBoundingSphere)
         {
-            if(wizardBoundingSphere.Intersects(this.BoundingSphere) &&!this.IsRetrieved)
+            if (wizardBoundingSphere.Intersects(this.BoundingSphere) && !this.IsRetrieved)
             {
                 this.IsRetrieved = true;
 

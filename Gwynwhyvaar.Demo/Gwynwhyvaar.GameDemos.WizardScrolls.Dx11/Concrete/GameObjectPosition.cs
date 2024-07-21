@@ -29,17 +29,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
                 scroll.IsRetrieved = false;
             }
 
-            // place power-ups
-            foreach (PowerUpGameObject powerUp in powerUps)
-            {
-                powerUp.Position = GenerateRandomPosition(min, max, scrolls, rockBarriers, random);
-                tempCenter = powerUp.BoundingSphere.Center;
-                tempCenter.X = powerUp.Position.X;
-                tempCenter.Z = powerUp.Position.Z;
-                powerUp.BoundingSphere = new BoundingSphere(tempCenter, powerUp.BoundingSphere.Radius);
-                powerUp.IsRetrieved = false;
-            }
-
             // place rock barriers
             foreach (RockBarrier barrier in rockBarriers)
             {
@@ -70,6 +59,17 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
                 }
                 // leave the default Y position -no need to change it.
                 // foliage.Position.Y = 20;
+            }
+
+            // place power-ups
+            foreach (PowerUpGameObject powerUp in powerUps)
+            {
+                powerUp.Position = GenerateRandomPosition(min, max, scrolls, rockBarriers, random);
+                tempCenter = powerUp.BoundingSphere.Center;
+                tempCenter.X = powerUp.Position.X;
+                tempCenter.Z = powerUp.Position.Z;
+                powerUp.BoundingSphere = new BoundingSphere(tempCenter, powerUp.BoundingSphere.Radius);
+                powerUp.IsRetrieved = false;
             }
         }
         private Vector3 GenerateRandomPosition(int min, int max, Scroll[] scrolls, RockBarrier[] rockBarriers, Random random)

@@ -43,6 +43,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private DrawModel _drawModel;
         private GameObject _groundGameObject, _boundingSphere;
         private CameraObject _gameCameraObject;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -120,7 +121,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             // load font
             _statsFont = Content.Load<SpriteFont>("fonts/StatsFont");
             // load the background music
-            _backgroundMusic = Content.Load<Song>("audio/the-time-is-upon-us-in_game");
+            _backgroundMusic = Content.Load<Song>("audio/the-time-is-upon-us-bg_music");
         }
         protected override void Update(GameTime gameTime)
         {
@@ -150,7 +151,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 foreach (Scroll scroll in _scrolls)
                 {
                     scroll.Update(_wizard.BoundingSphere);
-                    scroll.SetRotation(_modelRotation);
 
                     if (scroll.IsRetrieved)
                     {
