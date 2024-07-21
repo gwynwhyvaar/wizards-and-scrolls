@@ -16,6 +16,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 {
     public class WizardScrollsGameHome : Game
     {
+        private int _totalScore = 0;
+        private int _currentLevel = 0;
         private int _retrievedScrolls = 0;
 
         private TimeSpan _startTime, _roundTimer, _roundTime;
@@ -113,20 +115,19 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         protected override void Update(GameTime gameTime)
         {
             _inputState.Update();
-
             if (_inputState.PlayerExit(PlayerIndex.One))
             {
                 Exit();
             }
-
             if (_currentGameState == GameStateEnum.Loading)
             {
+                _currentLevel = 1;
+
                 if (_inputState.StartGame(PlayerIndex.One))
                 {
                     ResetGame(gameTime, _aspectRatio);
                 }
             }
-
             if ((_currentGameState == GameStateEnum.Running))
             {
                 _wizard.Update(_inputState, _rockBarriers);
@@ -144,6 +145,11 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 }
                 if (_retrievedScrolls == GameConstants.NumScrolls)
                 {
+                    // todo: update the total game score
+                    _totalScore = _totalScore + 100;
+                    // increase the level
+                    _currentLevel++;
+                    // set the gamestate to 'Won'
                     _currentGameState = GameStateEnum.Won;
                 }
                 _roundTimer -= gameTime.ElapsedGameTime;
@@ -152,7 +158,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     _currentGameState = GameStateEnum.Lost;
                 }
             }
-
             if ((_currentGameState == GameStateEnum.Won) || (_currentGameState == GameStateEnum.Lost))
             {
                 if (MediaPlayer.State == MediaState.Playing)
@@ -174,7 +179,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         {
             _graphics.GraphicsDevice.Clear(Color.DeepSkyBlue);
             _graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
             switch (_currentGameState)
             {
                 case GameStateEnum.Loading:
@@ -187,7 +191,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                     break;
                 case GameStateEnum.Won:
                     // draw won screen
-                    DrawWinOrLossScreen(GameConstants.GameWonText);
+                    DrawWinOrLossScreen(string.Format($"{GameConstants.GameWonText}{_totalScore}\n", _currentLevel.GetPreviousLevel()), GameStateEnum.Won);
                     break;
                 case GameStateEnum.Lost:
                     // draw lost creen
@@ -202,6 +206,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
 
             string text1 = GameConstants.TimeRemainingText;
             string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumRockBarriers.ToString()}";
+            string text3 = $"{GameConstants.HighScoreText} {_totalScore}";
+            string text4 = $"{GameConstants.LevelText}{_currentLevel}";
 
             Rectangle rectSafeArea;
 
@@ -220,6 +226,12 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             positionText.Y += textSize.Y;
 
             _spriteBatch.DrawString(_statsFont, text2, positionText, Color.White);
+            positionText.Y += textSize.Y;
+
+            _spriteBatch.DrawString(_statsFont, text3, positionText, Color.Yellow);
+            positionText.Y += textSize.Y;
+
+            _spriteBatch.DrawString(_statsFont, text4, positionText, Color.White);
             _spriteBatch.End();
 
             ResetRenderStates();
@@ -310,6 +322,11 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             InitializeGameField();
 
             _retrievedScrolls = 0;
+            if (_currentGameState == GameStateEnum.Lost)
+            {
+                // reset the level
+                _currentLevel = 0;
+            }
             _startTime = gameTime.TotalGameTime;
             _roundTimer = _roundTime;
             _currentGameState = GameStateEnum.Running;
@@ -410,7 +427,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             // Place Scrolls, clouds And Rocks();
             _gameObjectPostion.PlaceScrollsAndRockBarriers(_scrolls, _rockBarriers, _random, _clouds, _foliageList);
         }
-        private void DrawWinOrLossScreen(string gameResult)
+        private void DrawWinOrLossScreen(string gameResult, GameStateEnum gameStateEnum = GameStateEnum.Loading)
         {
             float xOffsetText, yOffsetText;
 
@@ -420,7 +437,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             xOffsetText = yOffsetText = 0;
 
             Vector2 resultText = _statsFont.MeasureString(gameResult);
-            Vector2 playAgainSizeText = _statsFont.MeasureString(GameConstants.PlayAgainText);
+            Vector2 playAgainSizeText = gameStateEnum == GameStateEnum.Won ? _statsFont.MeasureString(GameConstants.ProceedToNextLevelText) : _statsFont.MeasureString(GameConstants.PlayAgainText);
             Vector2 positionText;
 
             centerText = new Vector2(resultText.X / 2, resultText.Y / 2);
@@ -437,8 +454,17 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             xOffsetText = (viewportSize.X / 2 - centerText.X);
             positionText = new Vector2(xOffsetText, yOffsetText);
 
-            _spriteBatch.DrawString(_statsFont, GameConstants.PlayAgainText, positionText, Color.AntiqueWhite);
-            _spriteBatch.End();
+            if (gameStateEnum == GameStateEnum.Won)
+            {
+                // display the next level
+                _spriteBatch.DrawString(_statsFont, GameConstants.ProceedToNextLevelText, positionText, Color.AntiqueWhite);
+                _spriteBatch.End();
+            }
+            else
+            {
+                _spriteBatch.DrawString(_statsFont, GameConstants.PlayAgainText, positionText, Color.AntiqueWhite);
+                _spriteBatch.End();
+            }
 
             ResetRenderStates();
         }

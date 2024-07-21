@@ -11,7 +11,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const float ViewAngle = 45.0f;
 
         // player -avatar constants
-        public const float Velocity = 0.75f;
+        public const float Velocity = 0.45f;
         public const float TurnSpeed = 0.025f;
         public const float HeightOffset = 0;
 
@@ -36,16 +36,19 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const float RockBarrierBoundingSphereFactor = .7f;
 
         // game timer 
-        public static readonly TimeSpan RoundTime = TimeSpan.FromSeconds(30.25);
+        public static readonly TimeSpan RoundTime = TimeSpan.FromSeconds(60.25);
 
         // display text
         public const string TimeRemainingText = "Time Remaining: ";
         public const string ScrollsFoundText = "Scrolls Retrieved: ";
-        public const string GameWonText = "Game Won !";
+        public const string GameWonText = "Level {0} Completed !\nScore: ";
         public const string GameLostText = "Game Lost !";
         public const string PlayAgainText = "Press Enter/Start to play again or Esc/Back to quit";
+        public const string ProceedToNextLevelText = "Press Enter/Start to proceed to Next Level";
         public const string Instructions1Text = "Retrieve all Scrolls before time runs out.";
         public const string Instructions2Text = "Control Wizard using keyboard (A, D, W, S) or the left thumbstick.";
+        public const string LevelText = "Level: ";
+        public const string HighScoreText = "High-score: ";
 
         // inut state management -this handles the amount of gamepads supported
         public const int MaxGamePadInputs = 4;
