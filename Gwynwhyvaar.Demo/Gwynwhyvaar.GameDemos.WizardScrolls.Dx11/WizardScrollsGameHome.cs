@@ -19,10 +19,12 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         private int _totalScore = 0;
         private int _currentLevel = 0;
         private int _retrievedScrolls = 0;
+        private int _levelPowerUpPickCount = 0;
 
         private TimeSpan _startTime, _roundTimer, _roundTime;
 
         private float _aspectRatio;
+        private float _modelRotation;
 
         private Song _backgroundMusic;
 
@@ -65,7 +67,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             _graphics.PreparingDeviceSettings += _graphics_PreparingDeviceSettings;
 
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
 
             // set a default resolution of 853 x480
             _graphics.PreferredBackBufferWidth = 853;
@@ -138,6 +140,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             }
             if ((_currentGameState == GameStateEnum.Running))
             {
+                _modelRotation += (float)gameTime.ElapsedGameTime.TotalMilliseconds * MathHelper.ToRadians(0.1f);
+
                 _wizard.Update(_inputState, _rockBarriers);
                 _gameCameraObject.Update(_wizard.ForwardDirection, _wizard.Position, _aspectRatio);
 
@@ -146,6 +150,8 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 foreach (Scroll scroll in _scrolls)
                 {
                     scroll.Update(_wizard.BoundingSphere);
+                    scroll.SetRotation(_modelRotation);
+
                     if (scroll.IsRetrieved)
                     {
                         _retrievedScrolls++;
@@ -154,10 +160,11 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 foreach (PowerUpGameObject powerUp in _powerUps)
                 {
                     powerUp.Update(_wizard.BoundingSphere);
-                    if (powerUp.IsRetrieved)
+                    if (powerUp.IsRetrieved && _levelPowerUpPickCount < GameConstants.NumPowerUpCount)
                     {
                         // increase the timer ..
-                        _roundTimer.Add(TimeSpan.FromSeconds(GameConstants.PowerUpBonusSeconds));
+                        _roundTimer = _roundTimer.Add(TimeSpan.FromSeconds(GameConstants.PowerUpBonusSeconds));
+                        _levelPowerUpPickCount++;
                     }
                 }
                 if (_retrievedScrolls == GameConstants.NumScrolls)
@@ -222,7 +229,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
             float xOffSetText, yOffSetText;
 
             string text1 = GameConstants.TimeRemainingText;
-            string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumRockBarriers.ToString()}";
+            string text2 = $"{GameConstants.ScrollsFoundText} {_retrievedScrolls.ToString()} of {GameConstants.NumScrolls.ToString()}";
             string text3 = $"{GameConstants.HighScoreText} {_totalScore}";
             string text4 = $"{GameConstants.LevelText}{_currentLevel}";
 
@@ -320,7 +327,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
                 cloud.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
             }
 
-            // 5. draw the clouds ...
+            // 5. draw the foliage ...
             foreach (FoliageGameObject foliage in _foliageList)
             {
                 foliage.Draw(_gameCameraObject.ViewMatrix, _gameCameraObject.ProjectionMatrix);
@@ -371,6 +378,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11
         }
         private void InitializeGameField()
         {
+            _levelPowerUpPickCount = 0;
             _foliageList = new List<FoliageGameObject>();
 
             int randomRockBarrier = _random.Next(3);

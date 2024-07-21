@@ -60,7 +60,14 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Concrete
             // place foliage
             foreach (FoliageGameObject foliage in foliages)
             {
-                foliage.Position = GenerateRandomPosition(min, max, random);
+                if (foliage.ModelName.Equals("grass"))
+                {
+                    foliage.Position = GenerateRandomPosition(min, max, random);
+                }
+                else
+                {
+                    foliage.Position = GenerateRandomPosition(min, max, scrolls, rockBarriers, random);
+                }
                 // leave the default Y position -no need to change it.
                 // foliage.Position.Y = 20;
             }

@@ -50,6 +50,10 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                         effect.View = view;
                         effect.Projection = projection;
                         effect.SetSolidEffect();
+                        if(_modelName.Equals("obelisk", StringComparison.OrdinalIgnoreCase))
+                        {
+                            effect.EmissiveColor = Color.Purple.ToVector3();
+                        }
                     }
                     mesh.Draw();
                 }

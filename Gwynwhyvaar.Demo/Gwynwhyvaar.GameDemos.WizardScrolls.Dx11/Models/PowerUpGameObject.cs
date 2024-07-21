@@ -5,7 +5,6 @@ using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Extensions;
 using Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Interfaces;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,6 +31,10 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                         effect.View = view;
                         effect.Projection = projection;
                         effect.SetSolidEffect();
+                        if(mesh.Name.Equals("glass_top") || mesh.Name.Equals("glass_bott"))
+                        {
+                            effect.EmissiveColor = Color.LightBlue.ToVector3();
+                        }
                     }
                     mesh.Draw();
                 }
@@ -50,7 +53,6 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 
             Position = Vector3.Down;
             BoundingSphere = CalculateBoundingSphere();
-
             // .......
             BoundingSphere scaledSphere;
             scaledSphere = BoundingSphere;

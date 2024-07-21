@@ -11,9 +11,12 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Constants
         public const float ViewAngle = 45.0f;
 
         // player -avatar constants
-        public const float Velocity = 0.45f;
+        public const float Velocity = 0.10f;
         public const float TurnSpeed = 0.025f;
         public const float HeightOffset = 0;
+
+        // run speed
+        public const int RunSpeed = 5;
 
         // The MaxRange member is used to prevent the player -avatar from moving off the playing field
         public const int MaxRange = 98;

@@ -13,6 +13,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
 {
     public record class Scroll : GameObject, IGameObjectInterface
     {
+        private float _modelRotation;
         public bool IsRetrieved { get; set; }
 
         private SoundEffect _scrollCollect;
@@ -55,7 +56,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                 {
                     foreach (BasicEffect effect in mesh.Effects)
                     {
-                        effect.World = worldMatrix;
+                        effect.World = worldMatrix * Matrix.CreateRotationX(_modelRotation);
                         effect.View = view;
                         effect.Projection = projection;
                         effect.SetSolidEffect();
@@ -73,6 +74,7 @@ namespace Gwynwhyvaar.GameDemos.WizardScrolls.Dx11.Models
                 throw new Exception(ex.Message);
             }
         }
+        public void SetRotation(float rotation) => _modelRotation = rotation;
         public void Update(BoundingSphere wizardBoundingSphere)
         {
             if(wizardBoundingSphere.Intersects(this.BoundingSphere) &&!this.IsRetrieved)
